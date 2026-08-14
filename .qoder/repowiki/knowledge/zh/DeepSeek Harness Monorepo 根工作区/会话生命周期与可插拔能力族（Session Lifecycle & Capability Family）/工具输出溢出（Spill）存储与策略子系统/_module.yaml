@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: packages_session_lifecycle/spill
+title: 工具输出溢出（Spill）存储与策略子系统
+scope:
+    - packages/spill/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_core_runtime/core_runtime/tools
+    - path: packages_session_lifecycle/compaction
+    - path: packages_storage_persistence

@@ -1,0 +1,13 @@
+schema_version: 1
+module_path: packages_user_interaction
+title: 用户交互、反馈与设置能力集
+scope:
+    - packages/interaction/
+    - packages/feedback/
+    - packages/settings/
+    - packages/preset/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_agent_flow/plan
+    - path: packages_storage_persistence

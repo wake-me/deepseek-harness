@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: packages_tools_skills/lsp_packages
+title: LSP 能力层（服务定义、stdio 后端与模型工具）
+scope:
+    - packages/lsp/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_infrastructure/subprocess_shell_terminal

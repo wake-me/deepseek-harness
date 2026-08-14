@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: packages_tools_skills
+title: 外部能力桥接插件集（Skill / MCP / LSP）
+scope:
+    - packages/skill/
+    - packages/mcp/
+    - packages/lsp/
+source_files: []
+depends_on: []
+related_to: []

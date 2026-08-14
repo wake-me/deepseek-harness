@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: packages_core_runtime/host/plugin_inventory
+title: Cordis Loader 插件清单只读远程服务
+scope:
+    - packages/host/plugin-inventory/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_client_sdk

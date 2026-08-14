@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: packages_core_runtime/host/webserver_frontend_static
+title: Web 服务器与前端静态资源服务插件
+scope:
+    - packages/host/webserver/
+    - packages/host/frontend-static/
+source_files: []
+depends_on: []
+related_to:
+    - path: examples
+    - path: packages_core_runtime/host/directory_picker
+    - path: packages_session_lifecycle/session_query

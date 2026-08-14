@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: packages_agent_flow/subagent/tool_wrappers
+title: 子代理工具集（委派/控制/报告）
+scope:
+    - packages/subagent/tool-subagent/
+    - packages/subagent/tool-subagent-control/
+    - packages/subagent/tool-subagent-report/
+source_files: []
+depends_on: []
+related_to: []

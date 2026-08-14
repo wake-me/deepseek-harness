@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: packages_infrastructure/guard
+title: Agent 循环卫生防护插件集（Guard Plugins）
+scope:
+    - packages/guard/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_core_runtime/core_runtime/agent_loop

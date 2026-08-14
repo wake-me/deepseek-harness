@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: packages_core_runtime/host/directory_picker
+title: 目录选择器宿主能力（Directory Picker Host Seam）
+scope:
+    - packages/host/directory-picker/
+    - packages/host/directory-picker-auto/
+    - packages/host/directory-picker-browse/
+    - packages/host/directory-picker-native/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_core_runtime/host/webserver_frontend_static

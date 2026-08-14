@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: packages_core_runtime/boot
+title: 应用启动与命令行注入（app-boot & cmdline）
+scope:
+    - packages/boot/
+source_files: []
+depends_on: []
+related_to:
+    - path: python_sdk

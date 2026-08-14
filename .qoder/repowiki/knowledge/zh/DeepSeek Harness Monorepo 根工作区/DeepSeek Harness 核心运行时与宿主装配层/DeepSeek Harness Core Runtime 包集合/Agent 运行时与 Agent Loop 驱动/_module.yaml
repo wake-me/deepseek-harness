@@ -1,0 +1,13 @@
+schema_version: 1
+module_path: packages_core_runtime/core_runtime/agent_loop
+title: Agent 运行时与 Agent Loop 驱动
+scope:
+    - packages/core/agent/
+    - packages/core/agent-loop/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_agent_flow/goal
+    - path: packages_agent_flow/schedule
+    - path: packages_agent_flow/subagent
+    - path: packages_infrastructure/guard

@@ -1,0 +1,14 @@
+schema_version: 1
+module_path: packages_storage_persistence
+title: 存储、文件系统、附件与凭据持久化层
+scope:
+    - packages/storage/
+    - packages/fs/
+    - packages/attachment/
+    - packages/credentials/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_session_lifecycle/session_core/telemetry
+    - path: packages_session_lifecycle/spill
+    - path: packages_user_interaction

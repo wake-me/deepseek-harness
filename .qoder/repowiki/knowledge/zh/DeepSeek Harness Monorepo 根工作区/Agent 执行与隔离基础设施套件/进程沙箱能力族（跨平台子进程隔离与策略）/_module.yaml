@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: packages_infrastructure/sandbox
+title: 进程沙箱能力族（跨平台子进程隔离与策略）
+scope:
+    - packages/sandbox/
+source_files: []
+depends_on: []
+related_to:
+    - path: native_sandbox
+    - path: packages_infrastructure/subprocess_shell_terminal

@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: packages_agent_flow/workflow
+title: 动态工作流执行子系统
+scope:
+    - packages/workflow/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_agent_flow/subagent
+    - path: packages_core_runtime/core_runtime/tools
+    - path: packages_session_lifecycle/session_core

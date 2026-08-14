@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: packages_agent_flow/plan
+title: Plan Mode 协作状态管理
+scope:
+    - packages/plan/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_core_runtime/core_runtime/tools
+    - path: packages_session_lifecycle/session_core
+    - path: packages_user_interaction

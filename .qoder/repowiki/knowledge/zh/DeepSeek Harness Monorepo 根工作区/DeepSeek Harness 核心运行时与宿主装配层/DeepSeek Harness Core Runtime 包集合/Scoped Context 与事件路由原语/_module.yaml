@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: packages_core_runtime/core_runtime/scope
+title: Scoped Context 与事件路由原语
+scope:
+    - packages/core/scope/
+source_files: []
+depends_on: []
+related_to: []

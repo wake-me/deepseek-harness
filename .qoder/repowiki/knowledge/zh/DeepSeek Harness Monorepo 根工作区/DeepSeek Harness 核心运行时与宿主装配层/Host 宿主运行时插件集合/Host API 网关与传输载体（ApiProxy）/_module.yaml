@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: packages_core_runtime/host/api_proxy
+title: Host API 网关与传输载体（ApiProxy）
+scope:
+    - packages/host/apiproxy/
+source_files: []
+depends_on: []
+related_to:
+    - path: apps_web
+    - path: examples

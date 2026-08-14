@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: packages_session_lifecycle/session_core/projection_and_stats
+title: 会话投影、持久化缓存与统计折损
+scope:
+    - packages/session/session-projection/
+    - packages/session/session-projection-cache/
+    - packages/session/session-stats/
+source_files: []
+depends_on: []
+related_to: []

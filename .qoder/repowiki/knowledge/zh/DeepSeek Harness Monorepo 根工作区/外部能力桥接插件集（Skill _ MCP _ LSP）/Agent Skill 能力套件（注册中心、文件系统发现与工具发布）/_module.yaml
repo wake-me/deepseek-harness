@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: packages_tools_skills/skill_packages
+title: Agent Skill 能力套件（注册中心、文件系统发现与工具发布）
+scope:
+    - packages/skill/
+source_files: []
+depends_on: []
+related_to: []

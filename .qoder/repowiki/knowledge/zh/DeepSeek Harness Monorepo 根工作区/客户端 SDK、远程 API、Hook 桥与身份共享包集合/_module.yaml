@@ -1,0 +1,16 @@
+schema_version: 1
+module_path: packages_client_sdk
+title: 客户端 SDK、远程 API、Hook 桥与身份共享包集合
+scope:
+    - packages/client/
+    - packages/sdk/
+    - packages/api/
+    - packages/hooks/
+    - packages/identity/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_agent_flow/goal
+    - path: packages_agent_flow/subagent
+    - path: packages_core_runtime/host/plugin_inventory
+    - path: python_sdk

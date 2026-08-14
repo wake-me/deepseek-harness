@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: packages_agent_flow/subagent/core_engine
+title: 子代理核心运行时（Subagent Runtime）
+scope:
+    - packages/subagent/subagent/
+source_files: []
+depends_on: []
+related_to: []

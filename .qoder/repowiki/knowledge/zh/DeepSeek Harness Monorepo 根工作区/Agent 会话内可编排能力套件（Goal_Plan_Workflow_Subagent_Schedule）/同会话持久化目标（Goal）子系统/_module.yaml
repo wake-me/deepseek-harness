@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: packages_agent_flow/goal
+title: 同会话持久化目标（Goal）子系统
+scope:
+    - packages/goal/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_client_sdk
+    - path: packages_core_runtime/core_runtime/agent_loop
+    - path: packages_session_lifecycle/session_core

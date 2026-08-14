@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: examples
+title: DeepSeek Harness 示例与快照测试套件
+scope:
+    - examples/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_core_runtime/host/api_proxy
+    - path: packages_core_runtime/host/webserver_frontend_static
+    - path: python_sdk

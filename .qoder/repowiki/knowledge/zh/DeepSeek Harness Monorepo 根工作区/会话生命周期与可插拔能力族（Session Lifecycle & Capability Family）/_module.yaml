@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: packages_session_lifecycle
+title: 会话生命周期与可插拔能力族（Session Lifecycle & Capability Family）
+scope:
+    - packages/session/
+    - packages/session-query/
+    - packages/compaction/
+    - packages/spill/
+source_files: []
+depends_on: []
+related_to: []

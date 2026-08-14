@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: packages_session_lifecycle/session_query
+title: 会话查询能力族（session-query）
+scope:
+    - packages/session-query/
+source_files: []
+depends_on: []
+related_to:
+    - path: packages_core_runtime/host/webserver_frontend_static
+    - path: packages_session_lifecycle/session_core

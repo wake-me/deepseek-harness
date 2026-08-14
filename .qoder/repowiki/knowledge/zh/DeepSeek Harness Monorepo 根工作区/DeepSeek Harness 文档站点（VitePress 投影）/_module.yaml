@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: website_docs_site
+title: DeepSeek Harness 文档站点（VitePress 投影）
+scope:
+    - website/
+source_files: []
+depends_on: []
+related_to:
+    - path: docs
+    - path: scripts_build

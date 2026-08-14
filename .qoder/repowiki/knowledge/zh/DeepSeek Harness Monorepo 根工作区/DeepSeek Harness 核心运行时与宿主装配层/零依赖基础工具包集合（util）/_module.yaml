@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: packages_core_runtime/util
+title: 零依赖基础工具包集合（util）
+scope:
+    - packages/util/
+source_files: []
+depends_on: []
+related_to: []
