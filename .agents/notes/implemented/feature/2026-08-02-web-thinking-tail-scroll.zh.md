@@ -4,6 +4,8 @@ Status: implemented
 
 [English](2026-08-02-web-thinking-tail-scroll.md) | 中文
 
+> 部分被 [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md) 取代：配置 2–8 行预览时，此处的行内摘要换为垂直跟随的多行窗口；本 Note 描述的行内形态仍是默认。本 Note 仍是以下两点的权威：跟随器为何追踪真实流式 delta 而非独立动画，以及为何只有折叠行跟随。
+
 ## 问题
 
 Web Think 行在结算与流式 block 中都把 reasoning 首行渲染成折叠摘要。首行一旦出现，之后每个 reasoning delta 只会改变隐藏的正文。于是快速模型在思考时看起来静止，用户必须展开完整思维链才能确认输出仍在推进。产品事项表已经要求“thinking：滚动展示思维链更新、可展开”；当前行只满足了后半项。

@@ -22,6 +22,7 @@ import type {
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
 import { createChatStore } from '../src/client/stores.ts'
+import { DEFAULT_REASONING_PREVIEW_LINES } from '../src/conversation-settings.ts'
 import { ChatView } from '../src/client/chat/ChatView.tsx'
 import { zh } from '../src/client/locales.ts'
 import { AssistantNodeView } from '../src/client/chat/AssistantNodeView.tsx'
@@ -203,7 +204,12 @@ function makeHarness(init?: Partial<ConversationSnapshot>) {
       case 'context':
         return <ContextMessageNodeView {...nodeProps<'context'>()} />
       case 'assistant-step':
-        return <AssistantNodeView {...nodeProps<'assistant-step'>()} />
+        return (
+          <AssistantNodeView
+            {...nodeProps<'assistant-step'>()}
+            useReasoningPreviewLines={select => select(DEFAULT_REASONING_PREVIEW_LINES)}
+          />
+        )
       case 'command':
         return (
           <CommandNodeView
