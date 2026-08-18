@@ -1,4 +1,5 @@
-/* Composer Enter preference row: title/description plus selector pill. */
+/* Settings preference rows (Composer Enter, Think preview lines):
+   title/description plus selector pill. */
 
 .row {
   display: flex;

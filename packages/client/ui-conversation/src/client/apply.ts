@@ -28,6 +28,8 @@ import { ReasoningPreviewPolicy } from './chat/reasoning-preview-policy.ts'
 import { InputBar } from './skeleton/InputBar.tsx'
 import { EnterBehaviorRow } from './settings/EnterBehaviorRow.tsx'
 import type { EnterBehaviorRowInjected } from './settings/EnterBehaviorRow.tsx'
+import { PreviewLinesRow } from './settings/PreviewLinesRow.tsx'
+import type { PreviewLinesRowInjected } from './settings/PreviewLinesRow.tsx'
 import { ChatView } from './chat/ChatView.tsx'
 import { StatsLine } from './chat/StatsLine.tsx'
 import { ApprovalPanel } from './skeleton/ApprovalPanel.tsx'
@@ -147,6 +149,17 @@ export function apply(ctx: Context): void {
       setBusyEnter: (behavior) => { submissionPolicy.setBusyEnter(behavior) },
     }),
   }, EnterBehaviorRow))
+
+  ctx.slots.inject('settings.general.item', () => ctx.slots.register({
+    name: 'settings.general.item',
+    id: 'reasoning-preview-lines',
+    order: 21,
+    locale: NS,
+    inject: (): PreviewLinesRowInjected => ({
+      hooks: { previewLines: reasoningPreviewPolicy.lines },
+      setPreviewLines: (count) => { reasoningPreviewPolicy.setLines(count) },
+    }),
+  }, PreviewLinesRow))
 
   // Chat semantic reader positions by session, surviving view switches and
   // width reflow when the tab ring remounts the view. Deliberately not

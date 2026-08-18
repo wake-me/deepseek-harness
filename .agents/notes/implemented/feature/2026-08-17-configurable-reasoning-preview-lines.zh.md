@@ -10,7 +10,7 @@ Status: implemented
 
 ## Decision
 
-**行数是持久化的 `ui-conversation` 偏好，默认即单行形态。** `conversation-settings.ts`（由已名不副实的 `submission-settings.ts` 更名而来）新增 `reasoningPreviewLines`：整数 1–8，默认 1，由拥有 `busyEnter` 的同一 Host schema 校验。`ReasoningPreviewPolicy` 把该分节镜像进 `SnapshotStore`，方式与 `ComposerSubmissionPolicy` 完全一致；apply 把策略的 store 传入 `assistant-step` 节点注册的 `inject` `hooks` 分仓，`AssistantNodeView` 以 `useReasoningPreviewLines` 读取，并把行数作为普通 prop 经 `AssistantMarkdown` 下传。暂不提供 Settings 行——行数在 `settings.yaml` 中编辑，与该部署管理此命名空间的既有方式一致。
+**行数是持久化的 `ui-conversation` 偏好，一个值两条编辑路径。** `conversation-settings.ts`（由已名不副实的 `submission-settings.ts` 更名而来）新增 `reasoningPreviewLines`：整数 1–8，默认 1，由拥有 `busyEnter` 的同一 Host schema 校验。`ReasoningPreviewPolicy` 把该分节镜像进 `SnapshotStore`，方式与 `ComposerSubmissionPolicy` 完全一致——`setLines` 额外经 scope 写入持久化字段（先乐观发布活值，再 `host.set`），对称复刻 `setBusyEnter`。apply 把策略的 store 传入 `assistant-step` 节点注册的 `inject` `hooks` 分仓，`AssistantNodeView` 以 `useReasoningPreviewLines` 读取，并把行数作为普通 prop 经 `AssistantMarkdown` 下传。设置页通用分区提供 `PreviewLinesRow` 选择器（注册在 Composer Enter 行之后，共用其行样式模块），读策略的 store 并经 `setLines` 写入，`settings.yaml` 手编与 UI 行经由设置 scope 的修订围栏保持一致。
 
 **取值 1（以及字段缺省时的默认）原样渲染原有行内形态。** 摘要留在 `DisclosureRow` 头部内、与标题同行——结算后取 `firstLine`，流式时取最新的非空行——由单行滚动区横向追赶。头部几何与跟随器与引入该设置前完全一致，因此未配置的部署保持上游外观。
 
@@ -28,7 +28,7 @@ Status: implemented
 
 **为行数引入逐会话 store 或组件局部状态。** 放弃：该偏好跨会话且持久，settings scope 加 inject 绑定的可观察量（既有的 `busyEnter` 模式）才是拥有它的通道；其他做法都会制造第二事实源。
 
-**现在就发布 Settings UI 行。** 推迟：编辑 `settings.yaml` 的部署已经配置此命名空间；选择器行只会增加文案、locale 和表面积，而没有提出需求的消费方。
+**现在就发布 Settings UI 行。** 起初因无消费方提出而推迟；本部署自身的使用提出了需求，因此通用分区的选择器行（`PreviewLinesRow`，排在 Composer Enter 行之后）现已落地。rc.7 的重量级插件配置卡片也被考虑并拒绝：其暂存/丢弃/保存表单是为宿主插件配置面设计的，不适合本包已通过活 scope 拥有的分节中的单个受校验整数。
 
 ## Consequences
 
@@ -36,4 +36,4 @@ Status: implemented
 
 ## Testing
 
-`packages/client/ui-conversation/tests/reasoning-row.client.spec.tsx` 钉住两种形态：默认行内摘要且无预览元素、行内水平尾随（节流帧后 `scrollLeft = scrollWidth - clientWidth`）与结算重置、从头部和行内摘要两处展开、窗口垂直尾随（`scrollTop = scrollHeight - clientHeight`）及结算后窗口卸载回到行内首行、流式期间折叠后窗口恢复、配置行数到达 CSS 变量、以及空文本守卫。`tests/reasoning-preview-policy.client.spec.ts` 覆盖 scope 采纳、变更跟随、分节缺席保留与不回写；`tests/host.client.spec.ts` 把持久化分节契约扩展到新字段，含 0、9 与小数拒绝。
+`packages/client/ui-conversation/tests/reasoning-row.client.spec.tsx` 钉住两种形态：默认行内摘要且无预览元素、行内水平尾随（节流帧后 `scrollLeft = scrollWidth - clientWidth`）与结算重置、从头部和行内摘要两处展开、窗口垂直尾随（`scrollTop = scrollHeight - clientHeight`）及结算后窗口卸载回到行内首行、流式期间折叠后窗口恢复、配置行数到达 CSS 变量、以及空文本守卫。`tests/reasoning-preview-policy.client.spec.ts` 覆盖 scope 采纳、变更跟随、分节缺席保留、`setLines` 经 scope 写入与同值跳写及无 scope 的进程内回退、采纳不回写；`tests/preview-lines-row.client.spec.tsx` 钉住通用分区行的文案、选择写通与外部变更跟随；`tests/host.client.spec.ts` 把持久化分节契约扩展到新字段，含 0、9 与小数拒绝。

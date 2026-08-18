@@ -29,4 +29,23 @@ describe('ReasoningPreviewPolicy', () => {
     host.publish({ value: undefined, revision: 2 })
     expect(policy.lines.getSnapshot()).toBe(5)
   })
+
+  it('writes a change through the scope and skips an identical write', () => {
+    const host = stubSettingsScope<ConversationSettings>()
+    host.publish({ status: 'ready', value: { busyEnter: 'queue', reasoningPreviewLines: 1 }, revision: 1, writable: true })
+    const policy = new ReasoningPreviewPolicy(host.scope)
+
+    policy.setLines(1)
+    expect(host.set).not.toHaveBeenCalled()
+
+    policy.setLines(4)
+    expect(policy.lines.getSnapshot()).toBe(4)
+    expect(host.set).toHaveBeenCalledWith('reasoningPreviewLines', 4)
+  })
+
+  it('stays process-local without a scope', () => {
+    const policy = new ReasoningPreviewPolicy()
+    policy.setLines(6)
+    expect(policy.lines.getSnapshot()).toBe(6)
+  })
 })
