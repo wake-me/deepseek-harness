@@ -20,16 +20,17 @@ function latestLine(text: string): string {
 
 /**
  * Render one assistant reasoning block as the Think disclosure row. The
- * default single line keeps the summary inline next to the title — the
- * settled first line, or the latest non-blank line while streaming, chased
- * horizontally by its one-line scrollport. A configured count of 2–8 swaps
- * it for a multi-line window under the header that follows the tail
- * vertically while streaming and clamps to the head lines with an ellipsis
- * once settled. Expanding either posture swaps the preview for the complete
- * reasoning prose.
+ * collapsed posture is always the inline single-line summary next to the
+ * title — the settled first line, or the latest non-blank line while the
+ * block is the streaming tail, chased horizontally by its one-line
+ * scrollport. While that block streams and the configured count is 2–8, a
+ * multi-line window under the header temporarily replaces the inline
+ * summary and follows the tail vertically; settlement returns the row to
+ * the compact inline posture, so long transcripts keep one-line Think rows.
+ * Expanding the row swaps either posture for the complete reasoning prose.
  * @param props.text - complete or streaming reasoning text.
  * @param props.running - whether this block is the streaming tail.
- * @param props.previewLines - visible wrapped-line count of the collapsed preview.
+ * @param props.previewLines - visible wrapped-line count of the streaming window.
  * @param props.t - conversation locale seat for the running status.
  * @returns the reasoning disclosure.
  */
@@ -45,8 +46,10 @@ export function ReasoningRow({
   t: ChatViewSlotProps['t']
 }) {
   const [expanded, setExpanded] = useState(false)
-  const windowed = previewLines > 1
-  const summary = running ? latestLine(text) : firstLine(text)
+  // The streaming window exists only while running, so a settled row always
+  // renders the inline posture regardless of the configured count.
+  const windowed = running && previewLines > 1
+  const summary = running && !windowed ? latestLine(text) : firstLine(text)
   const summaryRef = useRef<HTMLSpanElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const scheduleSummaryScroll = useThrottledVisualUpdate(() => {
@@ -57,7 +60,7 @@ export function ReasoningRow({
   const schedulePreviewScroll = useThrottledVisualUpdate(() => {
     const element = previewRef.current
     if (element === null) return
-    element.scrollTop = running ? element.scrollHeight - element.clientHeight : 0
+    element.scrollTop = element.scrollHeight - element.clientHeight
   })
   useEffect(() => {
     scheduleSummaryScroll()
@@ -93,7 +96,6 @@ export function ReasoningRow({
         <div
           ref={previewRef}
           className={css.preview}
-          data-follow-end={running || undefined}
           style={{ '--reasoning-preview-lines': previewLines } as CSSProperties}
           onClick={() => { setExpanded(value => !value) }}
         >
