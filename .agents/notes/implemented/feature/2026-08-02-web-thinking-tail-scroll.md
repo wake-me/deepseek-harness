@@ -4,6 +4,8 @@ Status: implemented
 
 English | [中文](2026-08-02-web-thinking-tail-scroll.zh.md)
 
+> Partially superseded by [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md): configuring 2–8 preview lines swaps this inline summary for a multi-line window whose follower is vertical; the inline posture this note describes remains the default. This note stays the authority on why the follower tracks real streaming deltas rather than an independent animation, and why only the collapsed row follows.
+
 ## Problem
 
 The Web Think row rendered the first reasoning line as its collapsed summary for both settled and streaming blocks. Once that first line existed, every later reasoning delta changed hidden body text only. A fast model therefore looked stationary while it was thinking, and the user had to expand the full chain of thought to verify that output was still moving. The product backlog already called for “thinking: scrolling chain-of-thought updates, expandable”; the current row satisfied only the second half.

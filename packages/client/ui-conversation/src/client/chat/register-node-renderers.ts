@@ -6,21 +6,27 @@ import {
   CompactionNodeView, ContextMessageNodeView, RetryNodeView, TurnErrorNodeView,
   TurnMaxTokensNodeView, UnknownNodeView, UserMessageNodeView,
 } from './MessageItem.tsx'
+import type { ReasoningPreviewPolicy } from './reasoning-preview-policy.ts'
 import { TurnTailNodeView } from './TurnTailNodeView.tsx'
 
 /**
  * Register this package's business renderers behind the keyed Chat Node seat.
  * @param ctx - owning UI Conversation context.
+ * @param preview - live reasoning-preview preference feeding the assistant step.
  */
-export function registerChatNodeRenderers(ctx: Context): void {
+export function registerChatNodeRenderers(ctx: Context, preview: ReasoningPreviewPolicy): void {
   ctx.slots.inject('conversation.chat.node', () => ctx.slots.register(
     { name: 'conversation.chat.node', key: 'user', locale: NS }, UserMessageNodeView))
   ctx.slots.inject('conversation.chat.node', () => ctx.slots.register(
     { name: 'conversation.chat.node', key: 'steering', locale: NS }, UserMessageNodeView))
   ctx.slots.inject('conversation.chat.node', () => ctx.slots.register(
     { name: 'conversation.chat.node', key: 'context', locale: NS }, ContextMessageNodeView))
-  ctx.slots.inject('conversation.chat.node', () => ctx.slots.register(
-    { name: 'conversation.chat.node', key: 'assistant-step', locale: NS }, AssistantNodeView))
+  ctx.slots.inject('conversation.chat.node', () => ctx.slots.register({
+    name: 'conversation.chat.node',
+    key: 'assistant-step',
+    locale: NS,
+    inject: () => ({ hooks: { reasoningPreviewLines: preview.lines } }),
+  }, AssistantNodeView))
   ctx.slots.inject('conversation.chat.node', () => ctx.slots.register({
     name: 'conversation.chat.node',
     key: 'command',
