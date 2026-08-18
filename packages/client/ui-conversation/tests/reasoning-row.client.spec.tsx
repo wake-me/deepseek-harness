@@ -113,7 +113,7 @@ describe('ReasoningRow', () => {
     expect(row.getAttribute('aria-expanded')).toBe('false')
   })
 
-  it('follows the streaming tail vertically, then settles to the clamped head preview', () => {
+  it('follows the streaming tail vertically, then settles back to the inline single-line summary', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
@@ -123,7 +123,7 @@ describe('ReasoningRow', () => {
       />,
     )
     expect(view.getByText('运行中')).toBeTruthy()
-    // The preview carries the whole streamed text; only its window is visible.
+    // The streaming window carries the whole streamed text; only its tail is visible.
     const preview = view.getByText('Inspect the session Newest reasoning tokens')
     Object.defineProperties(preview, {
       scrollHeight: { configurable: true, value: 300 },
@@ -143,8 +143,8 @@ describe('ReasoningRow', () => {
     expect(preview.scrollTop).toBe(0)
     flushAnimationFrames(1)
     expect(preview.scrollTop).toBe(228)
-    expect(preview.getAttribute('data-follow-end')).toBe('true')
 
+    // Settlement unmounts the window; the row returns to the inline posture.
     view.rerender(
       <AssistantMarkdown
         t={t}
@@ -154,19 +154,18 @@ describe('ReasoningRow', () => {
       />,
     )
     flushAnimationFrames(3)
-    expect(view.getByText('Inspect the session Newest reasoning tokens keep arriving')).toBeTruthy()
     expect(view.queryByText('运行中')).toBeNull()
-    expect(preview.scrollTop).toBe(0)
-    expect(preview.hasAttribute('data-follow-end')).toBe(false)
+    expect(view.container.querySelector('[class*="preview"]')).toBeNull()
+    expect(view.getByText('Inspect the session')).toBeTruthy()
   })
 
-  it('expands from either Think or the reasoning preview', () => {
+  it('expands from the streaming window, and collapse brings the window back while still running', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nCheck persistence' }]}
         reasoningPreviewLines={3}
-        streaming={false}
+        streaming
       />,
     )
     const row = view.getByRole('button')
@@ -177,9 +176,10 @@ describe('ReasoningRow', () => {
 
     fireEvent.click(view.getByText('Think'))
     expect(row.getAttribute('aria-expanded')).toBe('false')
+    expect(view.getByText('Inspect the session Check persistence')).toBeTruthy()
   })
 
-  it('expanded Think drops the collapsed preview and renders plain prose, no IN card', () => {
+  it('expanded Think drops the collapsed summary and renders plain prose, no IN card', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
@@ -195,25 +195,25 @@ describe('ReasoningRow', () => {
     expect(view.container.querySelector('[class*="thinkBody"]')).not.toBeNull()
   })
 
-  it('sizes the preview window from the configured line count', () => {
+  it('sizes the streaming window from the configured line count', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
         blocks={[{ kind: 'reasoning', text: 'One line of reasoning' }]}
         reasoningPreviewLines={5}
-        streaming={false}
+        streaming
       />,
     )
     expect(view.getByText('One line of reasoning').style.getPropertyValue('--reasoning-preview-lines')).toBe('5')
   })
 
-  it('renders no preview for empty reasoning text', () => {
+  it('renders no window for empty reasoning text while streaming', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
         blocks={[{ kind: 'reasoning', text: '' }]}
         reasoningPreviewLines={3}
-        streaming={false}
+        streaming
       />,
     )
     expect(view.getByText('Think')).toBeTruthy()

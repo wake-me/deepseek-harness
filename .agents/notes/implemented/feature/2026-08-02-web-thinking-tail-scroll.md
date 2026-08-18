@@ -4,7 +4,7 @@ Status: implemented
 
 English | [中文](2026-08-02-web-thinking-tail-scroll.zh.md)
 
-> Partially superseded by [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md): configuring 2–8 preview lines swaps this inline summary for a multi-line window whose follower is vertical; the inline posture this note describes remains the default. This note stays the authority on why the follower tracks real streaming deltas rather than an independent animation, and why only the collapsed row follows.
+> Partially superseded by [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md): while a reasoning block streams, configuring 2–8 preview lines temporarily swaps this inline summary for a multi-line window whose follower is vertical; settled rows always keep the inline posture this note describes. This note stays the authority on why the follower tracks real streaming deltas rather than an independent animation, and why only the collapsed row follows.
 
 ## Problem
 

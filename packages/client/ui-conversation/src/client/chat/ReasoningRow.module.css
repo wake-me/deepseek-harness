@@ -65,10 +65,9 @@
   text-overflow: clip;
 }
 
-/* Multi-line window posture (2–8 lines): while streaming the window keeps
-   its tail pinned via scrollTop; settled, it clamps to the head lines with
-   an ellipsis on the last one. The single-line posture stays inline in the
-   header through .summary above. */
+/* Streaming window posture (2–8 lines, exists only while running): the
+   window keeps its tail pinned via scrollTop. Settlement unmounts it and
+   the row returns to the inline .summary posture above. */
 .preview {
   overflow: hidden;
   max-height: calc(var(--reasoning-preview-lines, 1) * 24px);
@@ -79,12 +78,6 @@
   white-space: pre-wrap;
   word-break: break-word;
   cursor: pointer;
-}
-
-.preview:not([data-follow-end]) {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: var(--reasoning-preview-lines, 1);
 }
 
 .thinkBody {

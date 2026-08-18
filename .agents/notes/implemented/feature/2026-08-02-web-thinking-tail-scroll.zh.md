@@ -4,7 +4,7 @@ Status: implemented
 
 [English](2026-08-02-web-thinking-tail-scroll.md) | 中文
 
-> 部分被 [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md) 取代：配置 2–8 行预览时，此处的行内摘要换为垂直跟随的多行窗口；本 Note 描述的行内形态仍是默认。本 Note 仍是以下两点的权威：跟随器为何追踪真实流式 delta 而非独立动画，以及为何只有折叠行跟随。
+> 部分被 [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md) 取代：当推理块正在流式输出且配置 2–8 行预览时，此处的行内摘要临时换为垂直跟随的多行窗口；已完成的行始终保持本 Note 描述的行内形态。本 Note 仍是以下两点的权威：跟随器为何追踪真实流式 delta 而非独立动画，以及为何只有折叠行跟随。
 
 ## 问题
 
