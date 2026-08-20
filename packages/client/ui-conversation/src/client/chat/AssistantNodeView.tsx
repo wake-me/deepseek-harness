@@ -19,7 +19,7 @@ export type AssistantNodeViewProps =
 
 /** Streaming, settled, and interrupted Assistant states share one keyed renderer instance. */
 export const AssistantNodeView = memo(function AssistantNodeView({
-  node, useTurnData, openFile, loadImage, fileMentions, useReasoningPreviewLines, t,
+  node, useTurnData, openFile, renderMessageImages, fileMentions, useReasoningPreviewLines, t,
 }: AssistantNodeViewProps) {
   const data = node.data
   const previewLines = useReasoningPreviewLines(value => value)
@@ -41,7 +41,7 @@ export const AssistantNodeView = memo(function AssistantNodeView({
       blocks={data.blocks}
       streaming={data.status === 'running'}
       interrupted={data.status === 'interrupted'}
-      loadImage={loadImage}
+      renderMessageImages={renderMessageImages}
       mentions={mentions}
       reasoningPreviewLines={previewLines}
       t={t}
