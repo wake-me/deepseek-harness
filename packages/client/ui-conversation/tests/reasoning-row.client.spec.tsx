@@ -44,6 +44,7 @@ describe('ReasoningRow', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nCheck persistence' }]}
         streaming={false}
       />,
@@ -122,6 +123,7 @@ describe('ReasoningRow', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nNewest reasoning tokens' }]}
         reasoningPreviewLines={3}
         streaming
@@ -138,6 +140,7 @@ describe('ReasoningRow', () => {
     view.rerender(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nNewest reasoning tokens keep arriving' }]}
         reasoningPreviewLines={3}
         streaming
@@ -153,6 +156,7 @@ describe('ReasoningRow', () => {
     view.rerender(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nNewest reasoning tokens keep arriving\n' }]}
         reasoningPreviewLines={3}
         streaming={false}
@@ -168,6 +172,7 @@ describe('ReasoningRow', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nCheck persistence' }]}
         reasoningPreviewLines={3}
         streaming
@@ -205,6 +210,7 @@ describe('ReasoningRow', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: 'One line of reasoning' }]}
         reasoningPreviewLines={5}
         streaming
@@ -217,6 +223,7 @@ describe('ReasoningRow', () => {
     const view = render(
       <AssistantMarkdown
         t={t}
+        renderMessageImages={renderMessageImages}
         blocks={[{ kind: 'reasoning', text: '' }]}
         reasoningPreviewLines={3}
         streaming

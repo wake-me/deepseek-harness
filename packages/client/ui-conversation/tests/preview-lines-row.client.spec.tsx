@@ -1,9 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { bindSnapshotSelector } from '@deepseek-ai/dsh-client-web-react'
 import { createSnapshotStore, type SessionListState, type WorkspaceListState } from '@deepseek-ai/dsh-client-runtime/client'
-import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
+import { bindSnapshotSelector, makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { PreviewLinesRow } from '../src/client/settings/PreviewLinesRow.tsx'
 import type { PreviewLinesRowProps } from '../src/client/settings/PreviewLinesRow.tsx'
 import { ReasoningPreviewPolicy } from '../src/client/chat/reasoning-preview-policy.ts'
