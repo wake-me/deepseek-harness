@@ -78,4 +78,15 @@ describe('BrandWordmark', () => {
     expect(svg.getAttribute('width')).toBe('156')
     expect(svg.getAttribute('viewBox')).toBe('26 0 156 24')
   })
+
+  it('can crop the HARNESS badge plate while keeping the letterforms', () => {
+    const view = render(<primitives.BrandWordmark includeBadge={false} />)
+    const svg = view.container.querySelector('svg')!
+    expect(svg.getAttribute('width')).toBe('124')
+    expect(svg.getAttribute('viewBox')).toBe('0 0 124 24')
+
+    view.rerender(<primitives.BrandWordmark includeMark={false} includeBadge={false} />)
+    expect(svg.getAttribute('width')).toBe('98')
+    expect(svg.getAttribute('viewBox')).toBe('26 0 98 24')
+  })
 })

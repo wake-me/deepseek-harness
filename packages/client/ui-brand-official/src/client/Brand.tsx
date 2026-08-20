@@ -14,9 +14,11 @@ export function OfficialBrandMark({ size, className }: OfficialBrandMarkProps) {
 }
 
 /**
- * Render the official name artwork without its independently slotted mark.
+ * Render the official name artwork without its independently slotted mark and
+ * without the HARNESS badge plate: the sidebar shows the whale mark through its
+ * own slot, so the name slot contributes only the DeepSeek letterforms.
  * @returns the official name wordmark.
  */
 export function OfficialBrandName() {
-  return <BrandWordmark includeMark={false} />
+  return <BrandWordmark includeMark={false} includeBadge={false} />
 }

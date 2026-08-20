@@ -9,23 +9,34 @@ import type { IconProps } from './icons/props.ts'
 export interface BrandWordmarkProps extends IconProps {
   /** Whether to include the leading whale mark; defaults to true. */
   includeMark?: boolean | undefined
+  /** Whether to include the trailing HARNESS badge plate; defaults to true. */
+  includeBadge?: boolean | undefined
 }
+
+// The DeepSeek letterforms end at x≈121.5 and the badge plate starts at
+// x=129.348, so x=124 crops between them with even side bearings.
+const MARK_END = 26
+const NAME_END = 124
+const FULL_END = 182
 
 /**
  * Render the full brand wordmark.
  * @param props.size - height in px (default 24; width follows the selected artwork).
  * @param props.className - extra class for layout placement.
  * @param props.includeMark - whether to include the leading whale mark.
+ * @param props.includeBadge - whether to include the trailing HARNESS badge plate.
  * @returns the wordmark svg (aria-hidden decorative brand art).
  */
-export function BrandWordmark({ size = 24, className, includeMark = true }: BrandWordmarkProps) {
-  const width = includeMark ? 182 : 156
+export function BrandWordmark({ size = 24, className, includeMark = true, includeBadge = true }: BrandWordmarkProps) {
+  const start = includeMark ? 0 : MARK_END
+  const end = includeBadge ? FULL_END : NAME_END
+  const width = end - start
   return (
     <svg
       width={(size * width) / 24}
       height={size}
       className={className}
-      viewBox={includeMark ? '0 0 182 24' : '26 0 156 24'}
+      viewBox={`${start} 0 ${width} 24`}
       fill="none"
       aria-hidden="true"
     >
