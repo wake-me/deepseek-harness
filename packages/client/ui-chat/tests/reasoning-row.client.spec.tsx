@@ -6,6 +6,8 @@ import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts
 import { zh } from '../src/client/locale.ts'
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
 
+const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
+
 afterEach(() => {
   cleanup()
 })
@@ -20,7 +22,7 @@ describe('ReasoningRow', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nNewest reasoning tokens' }]}
         streaming
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByText('运行中')).toBeTruthy()
@@ -32,7 +34,7 @@ describe('ReasoningRow', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nNewest reasoning tokens keep arriving' }]}
         streaming
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByText('Newest reasoning tokens keep arriving').parentElement
@@ -43,12 +45,40 @@ describe('ReasoningRow', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nNewest reasoning tokens keep arriving\n' }]}
         streaming={false}
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     const settledSummary = view.getByText('Inspect the session')
     expect(view.queryByText('运行中')).toBeNull()
     expect(settledSummary.parentElement?.hasAttribute('data-follow-end')).toBe(false)
+  })
+
+  it('renders the multi-line streaming window when the count is above one', () => {
+    const useFourLines = <S,>(select: (value: number) => S): S => select(4)
+    const streamingText = 'plan step one\nplan step two\nplan step three\nplan step four\nplan step five'
+    const view = render(
+      <AssistantMarkdown
+        t={t}
+        blocks={[{ kind: 'reasoning', text: streamingText }]}
+        streaming
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useFourLines}
+      />,
+    )
+    // The window replaces the inline summary and shows the whole streamed text.
+    expect(view.container.querySelector('[data-reasoning-preview="4"]')).toBeTruthy()
+    expect(view.container.querySelector('[data-follow-end]')).toBeNull()
+
+    // Settlement unmounts the window and restores the single-line posture.
+    view.rerender(
+      <AssistantMarkdown
+        t={t}
+        blocks={[{ kind: 'reasoning', text: streamingText }]}
+        streaming={false}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useFourLines}
+      />,
+    )
+    expect(view.container.querySelector('[data-reasoning-preview]')).toBeNull()
+    expect(view.getByText('plan step one').parentElement?.hasAttribute('data-follow-end')).toBe(false)
   })
 
   it('expands from either Think or the reasoning summary', () => {
@@ -57,7 +87,7 @@ describe('ReasoningRow', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nCheck persistence' }]}
         streaming={false}
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     const row = view.getByRole('button')
@@ -76,7 +106,7 @@ describe('ReasoningRow', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'Inspect the session\nCheck persistence' }]}
         streaming={false}
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     fireEvent.click(view.getByText('思考'))

@@ -308,6 +308,7 @@ function panelProps(data: WorkflowRunChatData, sessions = listState(), openSessi
   return {
     node: node(data),
     sessionId: PARENT_ID,
+    useReasoningPreviewLines: <S,>(select: (value: number) => S): S => select(1),
     useSessions: selector => selector(sessions),
     useSessionPendingInteraction: selector => selector(panelAttention),
     useSession: selector => selector(panelSession),

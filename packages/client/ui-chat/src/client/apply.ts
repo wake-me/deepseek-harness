@@ -28,6 +28,8 @@ import { registerConversationNodes } from './conversation-nodes/register.ts'
 import { DetailsPanel } from './details/DetailsPanel.tsx'
 import { en, NS, zh } from './locale.ts'
 import { TranscriptViewRow, type TranscriptViewRowInjected } from './settings/TranscriptViewRow.tsx'
+import { PreviewLinesRow, type PreviewLinesRowInjected } from './settings/PreviewLinesRow.tsx'
+import { ReasoningPreviewPolicy } from './reasoning-preview.ts'
 import { createChatStore } from './stores.ts'
 import { TranscriptViewPolicy } from './transcript-view.ts'
 import { CHAT_SETTINGS_NAMESPACE, type ChatSettings } from '../chat-settings.ts'
@@ -80,6 +82,10 @@ export function apply(ctx: Context): void {
     ctx.settingsScope.bind<ChatSettings>({ namespace: CHAT_SETTINGS_NAMESPACE }),
   )
 
+  const reasoningPreview = new ReasoningPreviewPolicy(
+    ctx.settingsScope.bind<ChatSettings>({ namespace: CHAT_SETTINGS_NAMESPACE }),
+  )
+
   ctx.slots.inject('settings.general.item', () => ctx.slots.register({
     name: 'settings.general.item',
     id: 'transcript-view',
@@ -90,6 +96,17 @@ export function apply(ctx: Context): void {
       setTranscriptView: (mode) => { transcriptView.setMode(mode) },
     }),
   }, TranscriptViewRow))
+
+  ctx.slots.inject('settings.general.item', () => ctx.slots.register({
+    name: 'settings.general.item',
+    id: 'reasoning-preview-lines',
+    order: 13,
+    locale: NS,
+    inject: (): PreviewLinesRowInjected => ({
+      hooks: { reasoningPreviewLines: reasoningPreview.lines },
+      setReasoningPreviewLines: (count) => { reasoningPreview.setLines(count) },
+    }),
+  }, PreviewLinesRow))
 
   ctx.slots.inject('conversation.view', () => {
     const disposeView = ctx.slots.register({
@@ -109,7 +126,7 @@ export function apply(ctx: Context): void {
         const session = binding.session
         const chat = chatSource(binding)
         return {
-          hooks: { transcriptView: transcriptView.mode },
+          hooks: { transcriptView: transcriptView.mode, reasoningPreviewLines: reasoningPreview.lines },
           keyedHooks: {
             chatNode: key => chat.getSnapshot().nodes.source(key),
             chatNodeProcess: key => chat.getSnapshot().nodes.processSource(key),

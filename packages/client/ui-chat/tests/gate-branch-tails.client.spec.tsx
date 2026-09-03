@@ -23,6 +23,8 @@ import { DetailsPanel } from '../src/client/details/DetailsPanel.tsx'
 import { zh } from '../src/client/locale.ts'
 import { chatSnapshotFixture } from './chat-snapshot-fixture.client.ts'
 
+const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
+
 const t: AssistantMarkdownProps['t'] = makeTranslate(zh, commonZh)
 const renderMessageImages: AssistantMarkdownProps['renderMessageImages'] = () => null
 
@@ -85,7 +87,7 @@ describe('render branch tails', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'done thinking' }, { kind: 'text', text: 'answer' }]}
         streaming
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     // reasoning at index 0 with a later block: running is false → ok state.
@@ -120,7 +122,7 @@ describe('render branch tails', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'still thinking' }]}
         streaming
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.container.querySelector('[data-state="running"]')).not.toBeNull()

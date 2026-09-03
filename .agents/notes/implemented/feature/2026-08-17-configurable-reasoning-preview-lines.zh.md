@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-折叠态的 Think 行只显示一行推理：`ReasoningRow` 从块中提取 `firstLine`/`latestLine`，CSS 强制 `white-space: nowrap`，再由水平的 `scrollLeft` 跟随器追赶流式尾部（[跟随器为何追踪真实 delta](2026-08-02-web-thinking-tail-scroll.md)）。单行输出让长推理在折叠状态下无法阅读，而且没有任何设置能加宽它。`DisclosureRow` 原语的头部行是固定 24px 的条带，多行预览放不进头部。
+折叠态的 Think 行只显示一行推理：`ReasoningRow` 从块中提取 `firstLine`/`latestLine`，CSS 强制 `white-space: nowrap`，再由水平的 `scrollLeft` 跟随器追赶流式尾部（[跟随器为何追踪真实 delta](2026-08-02-web-thinking-tail-scroll.zh.md)）。单行输出让长推理在折叠状态下无法阅读，而且没有任何设置能加宽它。`DisclosureRow` 原语的头部行是固定 24px 的条带，多行预览放不进头部。
 
 ## Decision
 
@@ -37,3 +37,13 @@ Status: implemented
 ## Testing
 
 `packages/client/ui-conversation/tests/reasoning-row.client.spec.tsx` 钉住两种形态：默认行内摘要且无预览元素、行内水平尾随（节流帧后 `scrollLeft = scrollWidth - clientWidth`）与结算重置、从头部和行内摘要两处展开、窗口垂直尾随（`scrollTop = scrollHeight - clientHeight`）及结算后窗口卸载回到行内首行、流式期间折叠后窗口恢复、配置行数到达 CSS 变量、以及空文本守卫。`tests/reasoning-preview-policy.client.spec.ts` 覆盖 scope 采纳、变更跟随、分节缺席保留、`setLines` 经 scope 写入与同值跳写及无 scope 的进程内回退、采纳不回写；`tests/preview-lines-row.client.spec.tsx` 钉住通用分区行的文案、选择写通与外部变更跟随；`tests/host.client.spec.ts` 把持久化分节契约扩展到新字段，含 0、9 与小数拒绝。
+
+
+## 移植到 ui-chat（2026-09-03，dsh v0.1.2-rc.1）
+
+0.1.2 重构拆分了 `ui-conversation` 并把聊天层移入 `ui-chat`；该功能在 rc.1 同步时从旧路径退场，并自包含地重新落在 `ui-chat` 内：
+
+- `reasoningPreviewLines` 与 `transcriptView` 同住 `ui-chat` 的 Host 设置节（`chat-settings.ts`），一并持久化。
+- `ReasoningPreviewPolicy` 镜像 `TranscriptViewPolicy`（只读采纳、显式写入），行数以 owner 货币（`ChatNodeOwnerProps` 上的 `useReasoningPreviewLines`）送达 `ReasoningRow`，不再依赖 ui-conversation 作用域的 store。
+- 流式窗口保持同一形态（仅运行中存在、替换行内摘要、结算后卸载），但尾随改为纯 CSS：窗口是块尾对齐的 flex 列，溢出从顶部裁剪，最新行始终可见，无需 JS 滚动。行高增长由 `data-preview` 驱动。
+- 设置行以 `reasoning-preview-lines`（order 13，紧邻 transcript-view）注册，文案迁入 `chat` 语言命名空间。

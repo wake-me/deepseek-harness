@@ -10,6 +10,7 @@ import type {
   SlotHookFactory, SnapshotSelectorHook,
 } from '@deepseek-ai/dsh-client-ui-slots'
 import type { SnapshotStore } from '@deepseek-ai/dsh-client-store'
+import type { ReasoningPreviewLines } from '../../chat-settings.ts'
 import type { MarkdownFileMentions } from '@deepseek-ai/dsh-client-ui-primitives'
 import type {} from '@deepseek-ai/dsh-client-ui-layout/client'
 import type { createChatStore } from '../stores.ts'
@@ -88,6 +89,8 @@ export interface ChatNodeOwnerProps {
   fileMentions: (owner: TurnTailOwnerProps) => MarkdownFileMentions | undefined
   /** Turn-process state when this Node belongs to a projected Turn. */
   turnProcess?: TurnProcessOwnerProps | undefined
+  /** Live streaming reasoning preview line count (1 keeps the inline summary). */
+  useReasoningPreviewLines: SnapshotSelectorHook<number>
 }
 
 /** Shared presentation state for one Turn-process answer generation. */
@@ -132,6 +135,8 @@ export interface ChatViewInjected {
   hooks: {
     /** Persisted completed-Turn transcript presentation. */
     transcriptView: SnapshotStore<TranscriptViewMode>
+    /** Persisted streaming reasoning preview line count. */
+    reasoningPreviewLines: SnapshotStore<ReasoningPreviewLines>
   }
   keyedHooks: {
     /** Resolve the stable source for one Chat Node key. */

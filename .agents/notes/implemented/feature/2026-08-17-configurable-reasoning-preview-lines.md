@@ -37,3 +37,24 @@ An unconfigured deployment renders the original single-line Think row, and with 
 ## Testing
 
 `packages/client/ui-conversation/tests/reasoning-row.client.spec.tsx` pins both postures: the default inline summary without a preview element, the inline horizontal tail-follow (`scrollLeft = scrollWidth - clientWidth` after throttled frames) with settlement reset, expansion from both the header and the inline summary, the windowed vertical tail-follow (`scrollTop = scrollHeight - clientHeight`) with settlement unmounting the window back to the inline first line, window collapse restoring the window while still running, the configured line count reaching the CSS variable, and the empty-text guard. `tests/reasoning-preview-policy.client.spec.ts` covers scope adoption, change-following, absent-section retention, `setLines` writing through the scope with identical-write skipping and a process-local fallback, and no write-back from adoption; `tests/preview-lines-row.client.spec.tsx` pins the General-section row's copy, selection write-through, and external-change follow; `tests/host.client.spec.ts` extends the durable-section contract to the new field including 0, 9, and fractional rejections.
+
+
+## Port to ui-chat (2026-09-03, dsh v0.1.2-rc.1)
+
+The 0.1.2 restructure split `ui-conversation` and moved the chat layer to
+`ui-chat`; the feature was retired from the old paths during the rc.1 sync
+and re-landed inside `ui-chat`, self-contained:
+
+- `reasoningPreviewLines` joins `transcriptView` in the `ui-chat` Host
+  settings section (`chat-settings.ts`), persisted beside it.
+- `ReasoningPreviewPolicy` mirrors `TranscriptViewPolicy` (adopt-only reads,
+  explicit writes), and the line count reaches `ReasoningRow` as owner
+  currency (`useReasoningPreviewLines` on `ChatNodeOwnerProps`) instead of a
+  ui-conversation-scoped store.
+- The streaming window keeps the same shape (exists only while running,
+  replaces the inline summary, unmounts on settlement), but tail-following is
+  now pure CSS: the window is a flex column aligned to the block end, so
+  overflow clips from the top and the newest lines stay visible without JS
+  scrolling. The row grows via `data-preview` instead of the old JS height.
+- The Settings row registers as `reasoning-preview-lines` (order 13, beside
+  transcript-view) with copy moved into the `chat` locale namespace.

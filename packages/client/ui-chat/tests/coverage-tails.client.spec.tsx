@@ -7,6 +7,8 @@ import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
 import { zh } from '../src/client/locale.ts'
 
+const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
+
 const t: AssistantMarkdownProps['t'] = makeTranslate(zh, commonZh)
 const renderMessageImages: AssistantMarkdownProps['renderMessageImages'] = () => null
 
@@ -23,7 +25,7 @@ describe('tails', () => {
           { kind: 'other', block: { type: 'mystery' } },
         ]}
         streaming
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByText('思考')).toBeTruthy()
@@ -35,7 +37,7 @@ describe('tails', () => {
         blocks={[{ kind: 'text', text: 'partial words' }]}
         streaming={false}
         interrupted
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(stopped.getByText('已停止')).toBeTruthy()
@@ -49,12 +51,13 @@ describe('tails', () => {
         t={t}
         blocks={[{ kind: 'tool-call', callId: 'c', name: 'todo_write', argsRaw: '{}' }]}
         streaming={false}
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(empty.container.firstChild).toBeNull()
     const blank = render(
-      <AssistantMarkdown t={t} blocks={[]} streaming={false} renderMessageImages={renderMessageImages} />,
+      <AssistantMarkdown t={t} blocks={[]} streaming={false} renderMessageImages={renderMessageImages}
+        reasoningPreviewLines={useStubPreviewLines} />,
     )
     expect(blank.container.firstChild).toBeNull()
   })

@@ -16,6 +16,7 @@ export interface AssistantMarkdownProps {
   interrupted?: boolean | undefined
   /** Render consecutive image blocks through the attachment slot. */
   renderMessageImages: ChatNodeOwnerProps['renderMessageImages']
+  reasoningPreviewLines: ChatNodeOwnerProps['useReasoningPreviewLines']
   /** Hide reasoning that belongs to the Turn-level process disclosure. */
   reasoningHidden?: boolean | undefined
   /** Reveal the owning Turn-level process disclosure. */
@@ -28,7 +29,7 @@ export interface AssistantMarkdownProps {
 
 /** Reasoning block as the Think variant summary row (figma 39:28304). */
 export const AssistantMarkdown = memo(function AssistantMarkdown({
-  blocks, streaming, interrupted, renderMessageImages,
+  blocks, streaming, interrupted, renderMessageImages, reasoningPreviewLines,
   reasoningHidden = false, revealProcess, mentions, t,
 }: AssistantMarkdownProps) {
   // Stable per locale revision (t identity changes on switch): a fresh object
@@ -65,7 +66,7 @@ export const AssistantMarkdown = memo(function AssistantMarkdown({
             hidden={reasoningHidden}
             reveal={revealProcess}
           >
-            <ReasoningRow text={block.text} running={streaming && i === last} t={t} />
+            <ReasoningRow text={block.text} running={streaming && i === last} reasoningPreviewLines={reasoningPreviewLines} t={t} />
           </ProcessReasoning>,
         )
         break

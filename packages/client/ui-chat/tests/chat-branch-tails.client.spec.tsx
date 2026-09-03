@@ -20,6 +20,8 @@ import { StatsLine } from '../src/client/chat/StatsLine.tsx'
 import { zh } from '../src/client/locale.ts'
 import { chatSnapshotFixture } from './chat-snapshot-fixture.client.ts'
 
+const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
+
 /** jsdom has no ResizeObserver; StatsLine watches its row for ellipsis truncation through one. */
 class ResizeObserverStub {
   observe(): void {}
@@ -1015,7 +1017,7 @@ describe('small branch tails', () => {
         t={t}
         blocks={[{ kind: 'reasoning', text: 'one-liner' }]}
         streaming={false}
-        renderMessageImages={renderMessageImages}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByText('one-liner')).toBeTruthy()

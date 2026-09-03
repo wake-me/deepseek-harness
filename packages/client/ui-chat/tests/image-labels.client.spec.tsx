@@ -9,6 +9,8 @@ import type { RenderMessageImages } from '@deepseek-ai/dsh-client-ui-conversatio
 import { AssistantMarkdown } from '../src/client/chat/AssistantMarkdown.tsx'
 import { zh } from '../src/client/locale.ts'
 
+const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
+
 afterEach(cleanup)
 
 const t = makeTranslate(zh, commonZh)
@@ -47,7 +49,7 @@ describe('assistant image slot handoff', () => {
         t={t}
         blocks={[{ kind: 'image', attachment }]}
         streaming={false}
-        renderMessageImages={imageRenderer(calls)}
+        renderMessageImages={imageRenderer(calls)} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByTestId('message-images').getAttribute('data-align')).toBe('start')
@@ -67,7 +69,7 @@ describe('assistant image slot handoff', () => {
           { kind: 'image', attachment },
         ]}
         streaming={false}
-        renderMessageImages={imageRenderer(calls)}
+        renderMessageImages={imageRenderer(calls)} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     const galleries = view.getAllByTestId('message-images')
@@ -87,7 +89,7 @@ describe('assistant image slot handoff', () => {
           { kind: 'text', text: 'after' },
         ]}
         streaming={false}
-        renderMessageImages={imageRenderer(calls)}
+        renderMessageImages={imageRenderer(calls)} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     const image = view.getByTestId('message-images')

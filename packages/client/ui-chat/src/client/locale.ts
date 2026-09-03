@@ -35,6 +35,10 @@ export const zh = {
   'chat.turnNavigation.turn': '第 {turn} 轮',
   'settings.transcript.title': '对话显示',
   'settings.transcript.description': '控制已完成轮次的过程内容',
+  'settings.preview.title': 'Think 思考窗口行数',
+  'settings.preview.description': '仅在思考流式输出时生效；思考结束后恢复单行摘要',
+  'settings.preview.original': '1 行（原版）',
+  'settings.preview.lines': '{count} 行',
   'settings.transcript.normal': 'Normal',
   'settings.transcript.compact': 'Compact',
   'fileOpen.title': '无法打开文件',
@@ -123,6 +127,10 @@ export type ChatKey = keyof typeof zh
 /** English dictionary, checked against the Chinese key set. */
 export const en = {
   'view.chat': 'Chat',
+  'settings.preview.title': 'Think streaming window lines',
+  'settings.preview.description': 'Applies only while reasoning streams; settled rows stay one line',
+  'settings.preview.original': '1 line (original)',
+  'settings.preview.lines': '{count} lines',
   'number.groupSeparator': ',',
   'duration.compactSeconds': '{seconds}s',
   'duration.compactMinutes': '{minutes}m{seconds}s',
