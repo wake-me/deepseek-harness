@@ -4,7 +4,7 @@ Status: implemented
 
 English | [中文](2026-08-02-web-thinking-tail-scroll.zh.md)
 
-> Partially superseded by [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.zh.md): while a reasoning block streams, configuring 2–8 preview lines temporarily swaps this inline summary for a multi-line window whose follower is vertical; settled rows always keep the inline posture this note describes. This note stays the authority on why the follower tracks real streaming deltas rather than an independent animation, and why only the collapsed row follows.
+> Partially superseded by [2026-08-17-configurable-reasoning-preview-lines](2026-08-17-configurable-reasoning-preview-lines.md): while a reasoning block streams, configuring 2–8 preview lines temporarily swaps this inline summary for a multi-line window whose follower is vertical; settled rows always keep the inline posture this note describes. This note stays the authority on why the follower tracks real streaming deltas rather than an independent animation, and why only the collapsed row follows.
 
 ## Problem
 
@@ -30,4 +30,4 @@ The collapsed row now communicates provider cadence through content motion as we
 
 ## Testing
 
-`packages/client/ui-conversation/tests/reasoning-row.client.spec.tsx` pins the latest-line selection, the calculated right-edge scroll position, and the settlement reset to the first line and `scrollLeft = 0`. The keyless assembled Chromium scenario in `apps/web/tests/lifecycle-chrome.e2e.ts` replays real recorded reasoning chunks at observable pacing, narrows the viewport until the summary overflows, and asserts that the live collapsed Think row reaches its actual browser scroll extent. Its settled replay golden remains unchanged, proving the historical summary contract stays stable.
+`packages/client/ui-chat/tests/reasoning-row.client.spec.tsx` pins the latest-line selection, the calculated right-edge scroll position, and the settlement reset to the first line and `scrollLeft = 0`. The keyless assembled Chromium scenario in `apps/web/tests/lifecycle-chrome.e2e.ts` replays real recorded reasoning chunks at observable pacing, narrows the viewport until the summary overflows, and asserts that the live collapsed Think row reaches its actual browser scroll extent. Its settled replay golden remains unchanged, proving the historical summary contract stays stable.

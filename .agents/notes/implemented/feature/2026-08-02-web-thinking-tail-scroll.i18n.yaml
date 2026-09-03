@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-02-web-thinking-tail-scroll.md
-2026-08-02-web-thinking-tail-scroll.md: c901b80a98c5ea1e079f22a2b2564a9850a739cb
-2026-08-02-web-thinking-tail-scroll.zh.md: 5e238f4428023cd1454a6262de654e0cff43b04f
+2026-08-02-web-thinking-tail-scroll.md: 25aea671e4b14fb63e092803b59d9f2503c6c2d8
+2026-08-02-web-thinking-tail-scroll.zh.md: c168b5a0b96d9f69cf9567a83978f3886c62b940
