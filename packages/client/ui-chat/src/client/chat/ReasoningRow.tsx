@@ -7,8 +7,9 @@ import a11yCss from './accessibility.module.css'
 import css from './ReasoningRow.module.css'
 
 function firstLine(text: string): string {
-  const newline = text.indexOf('\n')
-  return newline === -1 ? text : text.slice(0, newline)
+  const visible = text.trimStart()
+  const newline = visible.indexOf('\n')
+  return newline === -1 ? visible : visible.slice(0, newline)
 }
 
 function latestLine(text: string): string {
@@ -43,6 +44,7 @@ export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
       data-state={running ? 'running' : 'ok'}
       data-expanded={expanded || undefined}
       data-preview={windowed || undefined}
+      style={windowed ? { '--reasoning-preview-lines': previewLines } as CSSProperties : undefined}
     >
       {running && <span className={a11yCss.visuallyHidden}>{t('row.running')}</span>}
       <DisclosureRow
@@ -71,7 +73,6 @@ export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
         <div
           className={css.preview}
           data-reasoning-preview={previewLines}
-          style={{ '--reasoning-preview-lines': previewLines } as CSSProperties}
           onClick={() => { setExpanded(value => !value) }}
         >
           {text}

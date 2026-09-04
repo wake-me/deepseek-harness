@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-17-configurable-reasoning-preview-lines.md
-2026-08-17-configurable-reasoning-preview-lines.md: 1ba339e25c596a24f42affdacbd445c6fb3f9d2f
+2026-08-17-configurable-reasoning-preview-lines.md: ea8a8d5e5996d3cd4bb90b886dbdf99da9bb3fa5
 2026-08-17-configurable-reasoning-preview-lines.zh.md: 4fc9df2a1758dc8318ff99cd1849b6290b4ae6b5

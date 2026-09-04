@@ -68,6 +68,14 @@ describe('ReasoningRow', () => {
     expect(view.container.querySelector('[data-reasoning-preview="4"]')).toBeTruthy()
     expect(view.container.querySelector('[data-follow-end]')).toBeNull()
 
+    // The line-count variable must ride the root: custom properties inherit
+    // downward only, so a value set on the window itself cannot reach the root
+    // height calc that reserves the window's lines.
+    expect(view.container.querySelector<HTMLElement>('[data-preview]')
+      ?.style.getPropertyValue('--reasoning-preview-lines')).toBe('4')
+    expect(view.container.querySelector<HTMLElement>('[data-reasoning-preview]')
+      ?.style.getPropertyValue('--reasoning-preview-lines')).toBe('')
+
     // Settlement unmounts the window and restores the single-line posture.
     view.rerender(
       <AssistantMarkdown
@@ -79,6 +87,18 @@ describe('ReasoningRow', () => {
     )
     expect(view.container.querySelector('[data-reasoning-preview]')).toBeNull()
     expect(view.getByText('plan step one').parentElement?.hasAttribute('data-follow-end')).toBe(false)
+  })
+
+  it('settles on the first non-blank line when reasoning opens with newlines', () => {
+    const view = render(
+      <AssistantMarkdown
+        t={t}
+        blocks={[{ kind: 'reasoning', text: '\n\nAnalyze the request\nDraft the plan' }]}
+        streaming={false}
+        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
+      />,
+    )
+    expect(view.getByText('Analyze the request')).toBeTruthy()
   })
 
   it('expands from either Think or the reasoning summary', () => {
