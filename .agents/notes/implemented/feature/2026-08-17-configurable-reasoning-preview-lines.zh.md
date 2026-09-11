@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-折叠态的 Think 行只显示一行推理：`ReasoningRow` 从块中提取 `firstLine`/`latestLine`，CSS 强制 `white-space: nowrap`，再由水平的 `scrollLeft` 跟随器追赶流式尾部（[跟随器为何追踪真实 delta](2026-08-02-web-thinking-tail-scroll.zh.md)）。单行输出让长推理在折叠状态下无法阅读，而且没有任何设置能加宽它。`DisclosureRow` 原语的头部行是固定 24px 的条带，多行预览放不进头部。
+折叠态的 Think 行只显示一行推理：`ReasoningRow` 从块中提取 `firstLine`/`latestLine`，CSS 强制 `white-space: nowrap`，再由水平的 `scrollLeft` 跟随器追赶流式尾部（[跟随器为何追踪真实 delta](../../archived/feature/2026-08-02-web-thinking-tail-scroll.md)）。单行输出让长推理在折叠状态下无法阅读，而且没有任何设置能加宽它。`DisclosureRow` 原语的头部行是固定 24px 的条带，多行预览放不进头部。
 
 ## Decision
 
@@ -47,3 +47,7 @@ Status: implemented
 - `ReasoningPreviewPolicy` 镜像 `TranscriptViewPolicy`（只读采纳、显式写入），行数以 owner 货币（`ChatNodeOwnerProps` 上的 `useReasoningPreviewLines`）送达 `ReasoningRow`，不再依赖 ui-conversation 作用域的 store。
 - 流式窗口保持同一形态（仅运行中存在、替换行内摘要、结算后卸载），但尾随改为纯 CSS：窗口是块尾对齐的 flex 列，溢出从顶部裁剪，最新行始终可见，无需 JS 滚动。行高增长由 `data-preview` 驱动。
 - 设置行以 `reasoning-preview-lines`（order 13，紧邻 transcript-view）注册，文案迁入 `chat` 语言命名空间。
+
+## 在 v0.1.5-rc.2 上重放（2026-09-11）
+
+v0.1.5-rc.2 同步（1530 提交）触及全部移植文件，合并时六个冲突文件取官方版清场后在官方基线上重放移植。上游仍没有预览窗口；融入的唯一上游变化是折叠摘要的 `**` 标记去除——作用于内联摘要，流式窗口保持原始文本。`firstLine` 的 trimStart 与 root 级 `--reasoning-preview-lines` 声明原样延续。

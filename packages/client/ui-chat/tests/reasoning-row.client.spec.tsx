@@ -138,6 +138,7 @@ describe('ReasoningRow', () => {
         blocks={[{ kind: 'reasoning', text }]}
         streaming={streaming}
         renderMessageImages={renderMessageImages}
+        reasoningPreviewLines={useStubPreviewLines}
       />,
     )
 

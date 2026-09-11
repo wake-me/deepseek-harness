@@ -9,6 +9,7 @@ afterEach(cleanup)
 
 const t = ((_key: string) => 'label') as unknown as ChatViewSlotProps['t']
 const renderMessageImages = (() => null) as unknown as ChatNodeOwnerProps['renderMessageImages']
+const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
 
 function textBlock(text: string): AssistantBlock {
   return { kind: 'text', text }
@@ -49,6 +50,7 @@ describe('AssistantMarkdown local-path images', () => {
         blocks={[textBlock('See ![diagram](/tmp/graph.png) for the layout.')]}
         streaming={false}
         renderMessageImages={renderMessageImages}
+        reasoningPreviewLines={useStubPreviewLines}
         t={t}
       />,
     )
@@ -65,6 +67,7 @@ describe('AssistantMarkdown local-path images', () => {
         blocks={[textBlock('See ![diagram](relative.png).')]}
         streaming={false}
         renderMessageImages={renderMessageImages}
+        reasoningPreviewLines={useStubPreviewLines}
         t={t}
       />,
     )

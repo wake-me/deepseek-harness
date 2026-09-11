@@ -6,7 +6,7 @@ English | [中文](2026-08-17-configurable-reasoning-preview-lines.zh.md)
 
 ## Problem
 
-The collapsed Think row showed exactly one line of reasoning: `ReasoningRow` extracted `firstLine`/`latestLine` from the block, CSS forced `white-space: nowrap`, and a horizontal `scrollLeft` follower chased the streaming tail ([why the follower tracks real deltas](2026-08-02-web-thinking-tail-scroll.md)). Single-line output makes long reasoning unreadable in the collapsed posture, and no setting existed to widen it. The `DisclosureRow` primitive's header row is a fixed 24px strip, so a multi-line preview cannot live inside the header.
+The collapsed Think row showed exactly one line of reasoning: `ReasoningRow` extracted `firstLine`/`latestLine` from the block, CSS forced `white-space: nowrap`, and a horizontal `scrollLeft` follower chased the streaming tail ([why the follower tracks real deltas](../../archived/feature/2026-08-02-web-thinking-tail-scroll.md)). Single-line output makes long reasoning unreadable in the collapsed posture, and no setting existed to widen it. The `DisclosureRow` primitive's header row is a fixed 24px strip, so a multi-line preview cannot live inside the header.
 
 ## Decision
 
@@ -47,3 +47,7 @@ The 0.1.2 restructure split `ui-conversation` and moved the chat layer to `ui-ch
 - `ReasoningPreviewPolicy` mirrors `TranscriptViewPolicy` (adopt-only reads, explicit writes), and the line count reaches `ReasoningRow` as owner currency (`useReasoningPreviewLines` on `ChatNodeOwnerProps`) instead of a ui-conversation-scoped store.
 - The streaming window keeps the same shape (exists only while running, replaces the inline summary, unmounts on settlement), but tail-following is now pure CSS: the window is a flex column aligned to the block end, so overflow clips from the top and the newest lines stay visible without JS scrolling. The row grows via `data-preview` instead of the old JS height.
 - The Settings row registers as `reasoning-preview-lines` (order 13, beside transcript-view) with copy moved into the `chat` locale namespace.
+
+## Replay on v0.1.5-rc.2 (2026-09-11)
+
+The v0.1.5-rc.2 sync (1530 commits) touched every ported file, so the merge cleared the six conflicting ones to upstream and the port replayed on top. Upstream still ships no preview window; the one upstream change folded in is the collapsed-summary `**` marker strip, which applies to the inline summary while the streaming window keeps the raw text. The `firstLine` trimStart and the root-level `--reasoning-preview-lines` declaration carried over unchanged.

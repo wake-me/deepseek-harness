@@ -1,13 +1,15 @@
 /** Assistant reasoning disclosure, independent of Tool-call presentation. */
-import { useState } from 'react'
+import type { SnapshotSelectorHook } from '@deepseek-ai/dsh-client-store'
+import { useState, type CSSProperties } from 'react'
 import { DisclosureRow, IconThinkOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ChatViewSlotProps } from '../contract/slots.ts'
 import a11yCss from './accessibility.module.css'
 import css from './ReasoningRow.module.css'
 
 function firstLine(text: string): string {
-  const newline = text.indexOf('\n')
-  return newline === -1 ? text : text.slice(0, newline)
+  const visible = text.trimStart()
+  const newline = visible.indexOf('\n')
+  return newline === -1 ? visible : visible.slice(0, newline)
 }
 
 function latestLine(text: string): string {
@@ -19,14 +21,23 @@ function latestLine(text: string): string {
 /**
  * Render one assistant reasoning block as the Think disclosure row. The
  * collapsed summary omits double-asterisk markers; expanded content preserves
- * the complete text.
+ * the complete text. A configured 2–8 line streaming preview window replaces
+ * the inline summary while this block is the streaming tail.
  * @param props.text - complete or streaming reasoning text.
  * @param props.running - whether this block is the streaming tail.
+ * @param props.reasoningPreviewLines - live preview line-count store.
  * @param props.t - conversation locale seat for the running status.
  * @returns the reasoning disclosure.
  */
-export function ReasoningRow({ text, running, t }: { text: string; running: boolean; t: ChatViewSlotProps['t'] }) {
+export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
+  text: string
+  running: boolean
+  reasoningPreviewLines: SnapshotSelectorHook<number>
+  t: ChatViewSlotProps['t']
+}) {
   const [expanded, setExpanded] = useState(false)
+  const previewLines = reasoningPreviewLines(value => value)
+  const windowed = running && previewLines > 1
   const summary = (running ? latestLine(text) : firstLine(text)).replaceAll('**', '')
 
   return (
@@ -35,6 +46,8 @@ export function ReasoningRow({ text, running, t }: { text: string; running: bool
       data-variant="think"
       data-state={running ? 'running' : 'ok'}
       data-expanded={expanded || undefined}
+      data-preview={windowed || undefined}
+      style={windowed ? { '--reasoning-preview-lines': previewLines } as CSSProperties : undefined}
     >
       {running && <span className={a11yCss.visuallyHidden}>{t('row.running')}</span>}
       <DisclosureRow
@@ -48,7 +61,7 @@ export function ReasoningRow({ text, running, t }: { text: string; running: bool
         expandable
         expandOnRowClick
         onToggle={() => { setExpanded(value => !value) }}
-        collapsedContent={(
+        collapsedContent={windowed ? undefined : (
           <>
             <span className={css.separator} aria-hidden />
             <span className={css.summary} data-follow-end={running || undefined}>
@@ -59,6 +72,15 @@ export function ReasoningRow({ text, running, t }: { text: string; running: bool
       >
         <div className={css.thinkBody}>{text}</div>
       </DisclosureRow>
+      {windowed && !expanded && text.length > 0 && (
+        <div
+          className={css.preview}
+          data-reasoning-preview={previewLines}
+          onClick={() => { setExpanded(value => !value) }}
+        >
+          {text}
+        </div>
+      )}
     </div>
   )
 }

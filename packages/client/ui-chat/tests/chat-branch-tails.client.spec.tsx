@@ -1022,6 +1022,8 @@ describe('useCalendarDay boundary refresh', () => {
 })
 
 describe('small branch tails', () => {
+  const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
+
   it('AssistantMarkdown single-line reasoning summary skips the newline cut', () => {
     const view = render(
       <AssistantMarkdown
@@ -1029,6 +1031,7 @@ describe('small branch tails', () => {
         blocks={[{ kind: 'reasoning', text: 'one-liner' }]}
         streaming={false}
         renderMessageImages={renderMessageImages}
+        reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByText('one-liner')).toBeTruthy()
