@@ -1,8 +1,9 @@
 /** Assistant reasoning disclosure, independent of Tool-call presentation. */
 import type { SnapshotSelectorHook } from '@deepseek-ai/dsh-client-store'
-import { useState, type CSSProperties } from 'react'
-import { DisclosureRow, IconThinkOutline14 } from '@deepseek-ai/dsh-client-ui-primitives'
+import { useMemo, useState, type CSSProperties } from 'react'
+import { DisclosureRow, IconThinkOutline14, MarkdownText } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ChatViewSlotProps } from '../contract/slots.ts'
+import { markdownLabels } from '../markdown-labels.ts'
 import a11yCss from './accessibility.module.css'
 import css from './ReasoningRow.module.css'
 
@@ -19,14 +20,15 @@ function latestLine(text: string): string {
 }
 
 /**
- * Render one assistant reasoning block as the Think disclosure row. The
- * collapsed summary omits double-asterisk markers; expanded content preserves
- * the complete text. A configured 2–8 line streaming preview window replaces
- * the inline summary while this block is the streaming tail.
+ * Render one assistant reasoning block collapsed until the reader opens it. The
+ * collapsed summary omits double-asterisk markers; expanded content renders
+ * the complete Markdown with secondary typography. A configured 2–8 line
+ * streaming preview window replaces the inline summary while this block is
+ * the streaming tail.
  * @param props.text - complete or streaming reasoning text.
  * @param props.running - whether this block is the streaming tail.
  * @param props.reasoningPreviewLines - live preview line-count store.
- * @param props.t - conversation locale seat for the running status.
+ * @param props.t - conversation locale seat for status and Markdown actions.
  * @returns the reasoning disclosure.
  */
 export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
@@ -38,6 +40,7 @@ export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
   const [expanded, setExpanded] = useState(false)
   const previewLines = reasoningPreviewLines(value => value)
   const windowed = running && previewLines > 1
+  const labels = useMemo(() => markdownLabels(t), [t])
   const summary = (running ? latestLine(text) : firstLine(text)).replaceAll('**', '')
 
   return (
@@ -70,7 +73,9 @@ export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
           </>
         )}
       >
-        <div className={css.thinkBody}>{text}</div>
+        <div className={css.thinkBody}>
+          <MarkdownText text={text} streaming={running} labels={labels} variant="compact" />
+        </div>
       </DisclosureRow>
       {windowed && !expanded && text.length > 0 && (
         <div
