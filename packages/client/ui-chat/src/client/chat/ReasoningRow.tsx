@@ -1,11 +1,13 @@
 /** Assistant reasoning disclosure, independent of Tool-call presentation. */
 import type { SnapshotSelectorHook } from '@deepseek-ai/dsh-client-store'
-import { useMemo, useState, type CSSProperties } from 'react'
-import { DisclosureRow, IconThinkOutline14, MarkdownText } from '@deepseek-ai/dsh-client-ui-primitives'
-import type { ChatViewSlotProps } from '../contract/slots.ts'
+import { memo, useMemo, type CSSProperties } from 'react'
+import { DisclosureRow, IconThinkOutlineRegular, MarkdownText } from '@deepseek-ai/dsh-client-ui-primitives'
+import type { ChatViewSlotProps, UseDisclosure, UsePresentation } from '../contract/slots.ts'
 import { markdownLabels } from '../markdown-labels.ts'
 import a11yCss from './accessibility.module.css'
 import css from './ReasoningRow.module.css'
+
+const THINK_ICON = <IconThinkOutlineRegular size={14} />
 
 function firstLine(text: string): string {
   const visible = text.trimStart()
@@ -13,35 +15,68 @@ function firstLine(text: string): string {
   return newline === -1 ? visible : visible.slice(0, newline)
 }
 
-function latestLine(text: string): string {
-  const visible = text.trimEnd()
-  const newline = visible.lastIndexOf('\n')
-  return newline === -1 ? visible : visible.slice(newline + 1)
+function latestCompletedParagraphFirstLine(text: string): string {
+  let summary = ''
+  let paragraphStart = 0
+  const separator = /\r?\n(?:[\t ]*\r?\n)+/g
+  while (true) {
+    const nextParagraph = separator.exec(text)
+    const paragraphEnd = nextParagraph === null ? text.length
+      : nextParagraph.index + nextParagraph[0].indexOf('\n')
+    const newline = text.indexOf('\n', paragraphStart)
+    if (newline !== -1 && newline <= paragraphEnd) {
+      const candidate = text.slice(paragraphStart, newline).trim()
+      if (candidate !== '') summary = candidate
+    }
+    if (nextParagraph === null) return summary
+    paragraphStart = nextParagraph.index + nextParagraph[0].length
+  }
 }
 
 /**
  * Render one assistant reasoning block collapsed until the reader opens it. The
  * collapsed summary omits double-asterisk markers; expanded content renders
- * the complete Markdown with secondary typography. A configured 2–8 line
- * streaming preview window replaces the inline summary while this block is
- * the streaming tail.
+ * the complete Markdown with secondary typography. A streaming preview advances
+ * when a paragraph's first line completes. Mode changes toggle CSS display without unmounting
+ * collapsed summaries. A configured 2–8 line streaming preview window replaces
+ * the inline summary while this block is the streaming tail.
  * @param props.text - complete or streaming reasoning text.
  * @param props.running - whether this block is the streaming tail.
- * @param props.reasoningPreviewLines - live preview line-count store.
+ * @param props.usePresentation - live display-policy selector for this reasoning row.
+ * @param props.useDisclosure - independent open state with enclosing-Turn resets.
+ * @param props.reasoningPreviewLines - live preview line-count store; omitted keeps the inline single-line posture.
  * @param props.t - conversation locale seat for status and Markdown actions.
  * @returns the reasoning disclosure.
  */
-export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
+export const ReasoningRow = memo(function ReasoningRow({ text, running, usePresentation, useDisclosure, reasoningPreviewLines, t }: {
   text: string
   running: boolean
-  reasoningPreviewLines: SnapshotSelectorHook<number>
+  useDisclosure: UseDisclosure
+  usePresentation: UsePresentation
+  reasoningPreviewLines?: SnapshotSelectorHook<number>
   t: ChatViewSlotProps['t']
 }) {
-  const [expanded, setExpanded] = useState(false)
-  const previewLines = reasoningPreviewLines(value => value)
+  const { expanded, toggle } = useDisclosure()
+  const previewLines = reasoningPreviewLines?.(value => value) ?? 1
   const windowed = running && previewLines > 1
   const labels = useMemo(() => markdownLabels(t), [t])
-  const summary = (running ? latestLine(text) : firstLine(text)).replaceAll('**', '')
+  const summaryText = running ? latestCompletedParagraphFirstLine(text) : firstLine(text)
+  const summary = useMemo(() => summaryText.replaceAll('**', ''), [summaryText])
+  const preview = usePresentation(policy => !expanded && summary !== ''
+    && (running || policy.settledReasoningPreview))
+  const collapsedContent = useMemo(() => (
+    <>
+      <span className={css.separator} aria-hidden />
+      <span className={css.summary} data-streaming={running || undefined}>
+        <span className={css.summaryText}>{summary}</span>
+      </span>
+    </>
+  ), [running, summary])
+  const content = useMemo(() => expanded ? (
+    <div className={css.thinkBody}>
+      <MarkdownText text={text} streaming={running} labels={labels} variant="compact" />
+    </div>
+  ) : undefined, [expanded, labels, running, text])
 
   return (
     <div
@@ -49,7 +84,8 @@ export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
       data-variant="think"
       data-state={running ? 'running' : 'ok'}
       data-expanded={expanded || undefined}
-      data-preview={windowed || undefined}
+      data-preview={preview || undefined}
+      data-reasoning-window={windowed || undefined}
       style={windowed ? { '--reasoning-preview-lines': previewLines } as CSSProperties : undefined}
     >
       {running && <span className={a11yCss.visuallyHidden}>{t('row.running')}</span>}
@@ -58,34 +94,25 @@ export function ReasoningRow({ text, running, reasoningPreviewLines, t }: {
         leadingClassName={css.leading}
         titleClassName={css.title}
         chevronClassName={css.chevron}
-        icon={<IconThinkOutline14 size={14} />}
+        icon={THINK_ICON}
         title={t('message.think')}
         open={expanded}
         expandable
         expandOnRowClick
-        onToggle={() => { setExpanded(value => !value) }}
-        collapsedContent={windowed ? undefined : (
-          <>
-            <span className={css.separator} aria-hidden />
-            <span className={css.summary} data-follow-end={running || undefined}>
-              <span className={css.summaryText}>{summary}</span>
-            </span>
-          </>
-        )}
+        onToggle={toggle}
+        collapsedContent={windowed ? undefined : collapsedContent}
       >
-        <div className={css.thinkBody}>
-          <MarkdownText text={text} streaming={running} labels={labels} variant="compact" />
-        </div>
+        {content}
       </DisclosureRow>
       {windowed && !expanded && text.length > 0 && (
         <div
           className={css.preview}
           data-reasoning-preview={previewLines}
-          onClick={() => { setExpanded(value => !value) }}
+          onClick={toggle}
         >
           {text}
         </div>
       )}
     </div>
   )
-}
+})

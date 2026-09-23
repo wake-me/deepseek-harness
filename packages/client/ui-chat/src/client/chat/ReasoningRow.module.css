@@ -10,8 +10,10 @@
 
 /* Streaming preview window (2–8 lines): the row grows by the window and the
    window pins its tail by aligning content to the block end, so overflow is
-   clipped from the top and the newest lines stay visible without JS. */
-.root[data-preview]:not([data-expanded]) {
+   clipped from the top and the newest lines stay visible without JS. The
+   dedicated attribute keeps the height reservation off rows whose data-preview
+   only reports the inline summary visibility policy. */
+.root[data-reasoning-window]:not([data-expanded]) {
   height: calc(
     (24px + var(--dsh-content-font-delta, 0px))
     + var(--reasoning-preview-lines, 1) * 24px
@@ -93,23 +95,18 @@
   text-overflow: ellipsis;
 }
 
-.summary[data-follow-end] {
-  display: flex;
-  justify-content: flex-end;
+.summary[data-streaming] {
+  mask-image: linear-gradient(to right, black calc(100% - 48px), transparent);
 }
 
-.summary[data-follow-end] .summaryText {
-  flex: 0 0 auto;
-  width: max-content;
-  min-width: 100%;
+.summary[data-streaming] .summaryText {
   overflow: visible;
-  text-align: start;
   text-overflow: clip;
 }
 
 /* Streaming window posture (2–8 lines, exists only while running): the
-   window keeps its tail pinned via scrollTop. Settlement unmounts it and
-   the row returns to the inline .summary posture above. */
+   window keeps its tail pinned via block-end alignment. Settlement unmounts
+   it and the row returns to the inline .summary posture above. */
 .preview {
   display: flex;
   flex-direction: column;
@@ -123,6 +120,11 @@
   white-space: pre-wrap;
   word-break: break-word;
   cursor: pointer;
+}
+
+.root:not([data-preview]) .separator,
+.root:not([data-preview]) .summary {
+  display: none;
 }
 
 .thinkBody {

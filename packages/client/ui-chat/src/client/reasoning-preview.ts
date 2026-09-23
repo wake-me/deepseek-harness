@@ -1,7 +1,7 @@
 /** Host-backed streaming reasoning preview window policy. */
 
 import { createSnapshotStore, type SnapshotStore } from '@deepseek-ai/dsh-client-store'
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
 import {
   DEFAULT_REASONING_PREVIEW_LINES, REASONING_PREVIEW_LINES_FIELD,
   type ChatSettings, type ReasoningPreviewLines,
@@ -9,16 +9,20 @@ import {
 
 /** Live preview line count consumed by the Think row and its Settings row. */
 export class ReasoningPreviewPolicy {
+  private readonly unsubscribe: () => void
   /** Reactive current count; defaults to one line before Host settings arrive. */
   readonly lines: SnapshotStore<ReasoningPreviewLines> = createSnapshotStore(DEFAULT_REASONING_PREVIEW_LINES)
 
   /**
-   * @param host - durable Chat settings scope.
+   * @param host - durable Chat settings form.
    */
-  constructor(private readonly host: SettingsScope<ChatSettings>) {
-    host.subscribe(() => { this.adopt() })
+  constructor(private readonly host: ConfigForm<ChatSettings>) {
+    this.unsubscribe = host.subscribe(() => { this.adopt() })
     this.adopt()
   }
+
+  /** Release the accepted-value subscription. */
+  dispose(): void { this.unsubscribe() }
 
   /**
    * Publish and persist one explicit user choice.

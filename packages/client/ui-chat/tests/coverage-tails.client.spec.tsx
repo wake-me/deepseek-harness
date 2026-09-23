@@ -5,6 +5,8 @@ import { cleanup, render } from '@testing-library/react'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
+import { useDetailedPresentation } from './presentation-fixture.client.ts'
+import { useDisclosure } from '../src/client/chat/use-disclosure.ts'
 import { zh } from '../src/client/locale.ts'
 
 const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
@@ -17,7 +19,8 @@ afterEach(cleanup)
 describe('tails', () => {
   it('AssistantMarkdown renders reasoning as a Think row and unknown blocks as JSON fallback', () => {
     const view = render(
-      <AssistantMarkdown
+      <AssistantMarkdown useDisclosure={useDisclosure}
+        usePresentation={useDetailedPresentation}
         t={t}
         blocks={[
           { kind: 'reasoning', text: 'thinking hard\nsecond line' },
@@ -32,7 +35,8 @@ describe('tails', () => {
     expect(view.getByText('thinking hard')).toBeTruthy()
     expect(view.getByText(/未知内容块/)).toBeTruthy()
     const stopped = render(
-      <AssistantMarkdown
+      <AssistantMarkdown useDisclosure={useDisclosure}
+        usePresentation={useDetailedPresentation}
         t={t}
         blocks={[{ kind: 'text', text: 'partial words' }]}
         streaming={false}
@@ -47,7 +51,8 @@ describe('tails', () => {
     // Tool heads are drawn by ChatView's tool groups; an empty root between
     // groups is layout noise (no text, no pulse, no interrupted marker).
     const empty = render(
-      <AssistantMarkdown
+      <AssistantMarkdown useDisclosure={useDisclosure}
+        usePresentation={useDetailedPresentation}
         t={t}
         blocks={[{ kind: 'tool-call', callId: 'c', name: 'todo_write', argsRaw: '{}' }]}
         streaming={false}
@@ -56,7 +61,8 @@ describe('tails', () => {
     )
     expect(empty.container.firstChild).toBeNull()
     const blank = render(
-      <AssistantMarkdown t={t} blocks={[]} streaming={false} renderMessageImages={renderMessageImages}
+      <AssistantMarkdown useDisclosure={useDisclosure} usePresentation={useDetailedPresentation}
+        t={t} blocks={[]} streaming={false} renderMessageImages={renderMessageImages}
         reasoningPreviewLines={useStubPreviewLines} />,
     )
     expect(blank.container.firstChild).toBeNull()
