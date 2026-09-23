@@ -37,7 +37,9 @@ export class ReasoningPreviewPolicy {
   /** Adopt the latest accepted Host section without writing it back. */
   private adopt(): void {
     const section = this.host.getSnapshot().value
-    if (section === undefined || this.lines.getSnapshot() === section.reasoningPreviewLines) return
-    this.lines.set(section.reasoningPreviewLines)
+    if (section === undefined) return
+    // The durable document may predate the field; the schema default applies only at write time.
+    const count = section.reasoningPreviewLines ?? DEFAULT_REASONING_PREVIEW_LINES
+    if (this.lines.getSnapshot() !== count) this.lines.set(count)
   }
 }
