@@ -53,7 +53,7 @@ export const ReasoningRow = memo(function ReasoningRow({ text, running, usePrese
   running: boolean
   useDisclosure: UseDisclosure
   usePresentation: UsePresentation
-  reasoningPreviewLines?: SnapshotSelectorHook<number>
+  reasoningPreviewLines?: SnapshotSelectorHook<number> | undefined
   t: ChatViewSlotProps['t']
 }) {
   const { expanded, toggle } = useDisclosure()

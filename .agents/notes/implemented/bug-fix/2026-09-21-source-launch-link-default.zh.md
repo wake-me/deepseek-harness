@@ -1,8 +1,10 @@
 # Agent Note: 源码启动默认恢复 link 解析
 
-Status: implemented
+Status: retired (v0.1.7-alpha.2)
 
 [English](2026-09-21-source-launch-link-default.md) | 中文
+
+上游删除了解析模式选项（runtime-only profile resolution，9fd0a5ad52），且 runtime 解析器在 tsx 源码启动下已正常——v0.1.7-alpha.2 合并（9116b1be64）上以 headless bash 冒烟验证。本地默认值覆盖随选项一起消亡，无需保留或重放。以下记录本补丁在 v0.1.6-alpha.2 期间承载的回归。
 
 ## 问题
 

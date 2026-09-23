@@ -33,7 +33,7 @@ export interface AssistantMarkdownProps {
   interrupted?: boolean | undefined
   /** Render consecutive image blocks through the attachment slot. */
   renderMessageImages: ChatNodeOwnerProps['renderMessageImages']
-  reasoningPreviewLines?: ChatNodeOwnerProps['useReasoningPreviewLines']
+  reasoningPreviewLines?: ChatNodeOwnerProps['useReasoningPreviewLines'] | undefined
   /** Hide reasoning that belongs to the Turn-level process disclosure. */
   reasoningHidden?: boolean | undefined
   /** Live display policy for reasoning summaries. */

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { SnapshotStore } from '@deepseek-ai/dsh-client-store'
-import { IconChevronDownOutline14, Menu } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconChevronDownOutlineRegular, Menu } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ReasoningPreviewLines } from '../../chat-settings.ts'
 import { REASONING_PREVIEW_LINES_VALUES } from '../../chat-settings.ts'
@@ -42,7 +42,7 @@ export function PreviewLinesRow({ useReasoningPreviewLines, setReasoningPreviewL
       onClick={() => { setOpen(value => !value) }}
     >
       {count === 1 ? t('settings.preview.original') : t('settings.preview.lines', { count })}
-      <IconChevronDownOutline14 className={css.chevron} />
+      <IconChevronDownOutlineRegular className={css.chevron} />
     </button>
   )
 

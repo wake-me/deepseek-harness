@@ -1,8 +1,10 @@
 # Agent Note: Source launches default back to link resolution
 
-Status: implemented
+Status: retired (v0.1.7-alpha.2)
 
 English | [中文](2026-09-21-source-launch-link-default.zh.md)
+
+Upstream removed the resolution-mode option entirely (runtime-only profile resolution, 9fd0a5ad52) and the runtime resolver now works under the tsx source launch — verified by a headless bash smoke on the v0.1.7-alpha.2 merge (9116b1be64). The local default override died with the option; nothing to keep or replay. Recorded below is the regression this patch carried through v0.1.6-alpha.2.
 
 ## Problem
 
