@@ -85,6 +85,18 @@ if (additions !== '') {
   actions.push(`patched ${patchPath} (backup: cordis.patch.yml.bak-recover)`)
 }
 
+if (!patch.includes('id: ui-sidebar-browser')) {
+  const browserOverride = [
+    '',
+    '# v0.1.7 gates the sidebar browser to the desktop profile; re-enable the web iframe mode this shell uses.',
+    '- id: ui-sidebar-browser',
+    '  disabled: false',
+    '',
+  ].join('\n')
+  writeFileSync(patchPath, readFileSync(patchPath, 'utf8').trimEnd() + '\n' + browserOverride)
+  actions.push('re-enabled the sidebar browser for the web profile')
+}
+
 if (existsSync(desktopConfigPath)) {
   const config = JSON.parse(readFileSync(desktopConfigPath, 'utf8'))
   if (config.theme === undefined) {
