@@ -2,9 +2,9 @@
 import type {} from '@deepseek-ai/dsh-settings'
 
 import type { Volatile, Context } from '@deepseek-ai/cordis'
-import type { LinkOpening, TranscriptViewMode, PerformanceUsageMode } from './chat-settings.ts'
+import type { LinkOpening, TranscriptViewMode, PerformanceUsageMode, ReasoningPreviewLines } from './chat-settings.ts'
 import z from '@deepseek-ai/schemastery'
-import { TRANSCRIPT_VIEW_FIELD } from './chat-settings.ts'
+import { REASONING_PREVIEW_LINES_FIELD, TRANSCRIPT_VIEW_FIELD } from './chat-settings.ts'
 
 import { ChatSettingsFields } from './chat-settings.ts'
 
@@ -22,6 +22,8 @@ export interface Config {
   performanceUsage: Volatile<PerformanceUsageMode>
   /** Default destination for Chat HTTP(S) links. */
   linkOpening: Volatile<LinkOpening>
+  /** Streaming reasoning preview window line count. */
+  reasoningPreviewLines: Volatile<ReasoningPreviewLines>
 }
 
 /** Live preferences projected to the browser. */
@@ -29,6 +31,7 @@ export const Config = z.object({
   [TRANSCRIPT_VIEW_FIELD]: ChatSettingsFields[TRANSCRIPT_VIEW_FIELD].volatile(),
   performanceUsage: ChatSettingsFields['performanceUsage'].volatile(),
   linkOpening: ChatSettingsFields.linkOpening.volatile(),
+  [REASONING_PREVIEW_LINES_FIELD]: ChatSettingsFields[REASONING_PREVIEW_LINES_FIELD].volatile(),
 })
 
 /** Host preferences are consumed through the configuration form projection.
