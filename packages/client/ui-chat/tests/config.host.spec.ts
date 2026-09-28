@@ -4,7 +4,7 @@ import * as HostPlugin from '../src/index.ts'
 import { liveConfig, omitsGeneratedPage } from '../../../settings/settings/tests/live-config.ts'
 import { plainConfig } from '../../../settings/settings/src/schema.ts'
 import {
-  DEFAULT_TRANSCRIPT_VIEW_MODE, Config, apply,
+  Config, apply,
 } from '../src/index.ts'
 
 
@@ -14,7 +14,7 @@ describe('ui-chat Host settings', () => {
     const configuration = await liveConfig(ctx, { Config, apply })
     const { fiber } = configuration
 
-    expect(plainConfig(configuration.fiber.config)).toEqual({ transcriptView: DEFAULT_TRANSCRIPT_VIEW_MODE, performanceUsage: 'detailed', linkOpening: 'sidebar', reasoningPreviewLines: 1 })
+    expect(plainConfig(configuration.fiber.config)).toEqual({ performanceUsage: 'detailed', linkOpening: 'sidebar', reasoningPreviewLines: 1 })
     await configuration.update({ transcriptView: 'normal' })
     expect(plainConfig(configuration.fiber.config)).toEqual({ transcriptView: 'normal', performanceUsage: 'detailed', linkOpening: 'sidebar', reasoningPreviewLines: 1 })
     for (const mode of ['expanded', 'compact', 'standard', 'detailed', 'verbose']) {
@@ -23,7 +23,8 @@ describe('ui-chat Host settings', () => {
     }
     for (const mode of ['dense', '', 42, false, {}, null, undefined]) {
       await configuration.update({ transcriptView: mode })
-      expect(plainConfig(configuration.fiber.config)).toMatchObject({ transcriptView: 'standard', reasoningPreviewLines: 1 })
+      expect(plainConfig(configuration.fiber.config))
+        .toMatchObject({ transcriptView: mode === null ? null : undefined, reasoningPreviewLines: 1 })
     }
     await configuration.update({ performanceUsage: 'compact' })
     expect(plainConfig(configuration.fiber.config)).toMatchObject({ performanceUsage: 'compact' })
