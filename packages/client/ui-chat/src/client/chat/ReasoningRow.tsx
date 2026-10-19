@@ -1,9 +1,9 @@
 /** Assistant reasoning disclosure, independent of Tool-call presentation. */
 import type { SnapshotSelectorHook } from '@deepseek-ai/dsh-client-store'
 import { memo, useMemo, type CSSProperties } from 'react'
-import { DisclosureRow, IconThinkOutlineRegular, MarkdownText } from '@deepseek-ai/dsh-client-ui-primitives'
+import { DisclosureRow, IconThinkOutlineRegular, TextShimmer } from '@deepseek-ai/dsh-client-ui-primitives'
+import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ChatViewSlotProps, UseDisclosure, UsePresentation } from '../contract/slots.ts'
-import { markdownLabels } from '../markdown-labels.ts'
 import a11yCss from './accessibility.module.css'
 import css from './ReasoningRow.module.css'
 
@@ -45,38 +45,42 @@ function latestCompletedParagraphFirstLine(text: string): string {
  * @param props.usePresentation - live display-policy selector for this reasoning row.
  * @param props.useDisclosure - independent open state with enclosing-Turn resets.
  * @param props.reasoningPreviewLines - live preview line-count store; omitted keeps the inline single-line posture.
- * @param props.t - conversation locale seat for status and Markdown actions.
+ * @param props.renderSlot - framework renderer for the standard reasoning Body Slot.
+ * @param props.t - conversation locale seat for the disclosure and running status.
  * @returns the reasoning disclosure.
  */
-export const ReasoningRow = memo(function ReasoningRow({ text, running, usePresentation, useDisclosure, reasoningPreviewLines, t }: {
+export const ReasoningRow = memo(function ReasoningRow({
+  text, running, usePresentation, useDisclosure, reasoningPreviewLines, renderSlot, t,
+}: {
   text: string
   running: boolean
   useDisclosure: UseDisclosure
   usePresentation: UsePresentation
   reasoningPreviewLines?: SnapshotSelectorHook<number> | undefined
   t: ChatViewSlotProps['t']
-}) {
+} & Pick<PropsRenderSlots<'conversation.chat.reasoning.body'>, 'renderSlot'>) {
   const { expanded, toggle } = useDisclosure()
   const previewLines = reasoningPreviewLines?.(value => value) ?? 1
   const windowed = running && previewLines > 1
-  const labels = useMemo(() => markdownLabels(t), [t])
   const summaryText = running ? latestCompletedParagraphFirstLine(text) : firstLine(text)
   const summary = useMemo(() => summaryText.replaceAll('**', ''), [summaryText])
   const preview = usePresentation(policy => !expanded && summary !== ''
     && (running || policy.settledReasoningPreview))
   const collapsedContent = useMemo(() => (
     <>
-      <span className={css.separator} aria-hidden />
+      <span className={css.separator} data-shimmer-decoration aria-hidden />
       <span className={css.summary} data-streaming={running || undefined}>
-        <span className={css.summaryText}>{summary}</span>
+        <span className={css.summaryText}>
+          <TextShimmer>{summary}</TextShimmer>
+        </span>
       </span>
     </>
   ), [running, summary])
   const content = useMemo(() => expanded ? (
     <div className={css.thinkBody}>
-      <MarkdownText text={text} streaming={running} labels={labels} variant="compact" />
+      {renderSlot('conversation.chat.reasoning.body', { text, running })}
     </div>
-  ) : undefined, [expanded, labels, running, text])
+  ) : undefined, [expanded, renderSlot, running, text])
 
   return (
     <div
@@ -93,9 +97,9 @@ export const ReasoningRow = memo(function ReasoningRow({ text, running, usePrese
         rowClassName={css.row}
         leadingClassName={css.leading}
         titleClassName={css.title}
-        chevronClassName={css.chevron}
         icon={THINK_ICON}
         title={t('message.think')}
+        running={running}
         open={expanded}
         expandable
         expandOnRowClick

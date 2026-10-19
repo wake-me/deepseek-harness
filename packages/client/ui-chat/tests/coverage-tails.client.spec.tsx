@@ -6,20 +6,21 @@ import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
 import { useDetailedPresentation } from './presentation-fixture.client.ts'
+import { unusedImageLoader } from './reasoning-component-fixture.tsx'
 import { useDisclosure } from '../src/client/chat/use-disclosure.ts'
+import { useSearchableHidden } from '../src/client/chat/searchable-hidden.ts'
 import { zh } from '../src/client/locale.ts'
 
 const useStubPreviewLines = <S,>(select: (value: number) => S): S => select(1)
 
 const t: AssistantMarkdownProps['t'] = makeTranslate(zh, commonZh)
-const renderMessageImages: AssistantMarkdownProps['renderMessageImages'] = () => null
 
 afterEach(cleanup)
 
 describe('tails', () => {
   it('AssistantMarkdown renders reasoning as a Think row and unknown blocks as JSON fallback', () => {
     const view = render(
-      <AssistantMarkdown useDisclosure={useDisclosure}
+      <AssistantMarkdown renderSlot={() => null} useDisclosure={useDisclosure} useGroupAction={useSearchableHidden}
         usePresentation={useDetailedPresentation}
         t={t}
         blocks={[
@@ -28,20 +29,20 @@ describe('tails', () => {
           { kind: 'other', block: { type: 'mystery' } },
         ]}
         streaming
-        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
+        loadImage={unusedImageLoader} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(view.getByText('思考')).toBeTruthy()
     expect(view.getByText('thinking hard')).toBeTruthy()
     expect(view.getByText(/未知内容块/)).toBeTruthy()
     const stopped = render(
-      <AssistantMarkdown useDisclosure={useDisclosure}
+      <AssistantMarkdown renderSlot={() => null} useDisclosure={useDisclosure} useGroupAction={useSearchableHidden}
         usePresentation={useDetailedPresentation}
         t={t}
         blocks={[{ kind: 'text', text: 'partial words' }]}
         streaming={false}
         interrupted
-        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
+        loadImage={unusedImageLoader} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(stopped.getByText('已停止')).toBeTruthy()
@@ -51,19 +52,19 @@ describe('tails', () => {
     // Tool heads are drawn by ChatView's tool groups; an empty root between
     // groups is layout noise (no text, no pulse, no interrupted marker).
     const empty = render(
-      <AssistantMarkdown useDisclosure={useDisclosure}
+      <AssistantMarkdown renderSlot={() => null} useDisclosure={useDisclosure} useGroupAction={useSearchableHidden}
         usePresentation={useDetailedPresentation}
         t={t}
         blocks={[{ kind: 'tool-call', callId: 'c', name: 'todo_write', argsRaw: '{}' }]}
         streaming={false}
-        renderMessageImages={renderMessageImages} reasoningPreviewLines={useStubPreviewLines}
+        loadImage={unusedImageLoader} reasoningPreviewLines={useStubPreviewLines}
       />,
     )
     expect(empty.container.firstChild).toBeNull()
     const blank = render(
-      <AssistantMarkdown useDisclosure={useDisclosure} usePresentation={useDetailedPresentation}
-        t={t} blocks={[]} streaming={false} renderMessageImages={renderMessageImages}
-        reasoningPreviewLines={useStubPreviewLines} />,
+      <AssistantMarkdown renderSlot={() => null} useDisclosure={useDisclosure} useGroupAction={useSearchableHidden}
+        usePresentation={useDetailedPresentation}
+        t={t} blocks={[]} streaming={false} loadImage={unusedImageLoader} reasoningPreviewLines={useStubPreviewLines} />,
     )
     expect(blank.container.firstChild).toBeNull()
   })
