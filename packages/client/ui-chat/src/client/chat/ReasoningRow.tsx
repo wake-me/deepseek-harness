@@ -52,10 +52,12 @@ function latestCompletedParagraphFirstLine(text: string): string {
  * @returns the reasoning disclosure.
  */
 export const ReasoningRow = memo(function ReasoningRow({
-  text: rawText, running, usePresentation, useDisclosure, reasoningPreviewLines, renderSlot, t,
+  text: rawText, running, textInteractionSource = false, usePresentation, useDisclosure,
+  reasoningPreviewLines, renderSlot, t,
 }: {
   text: string
   running: boolean
+  textInteractionSource?: boolean
   useDisclosure: UseDisclosure
   usePresentation: UsePresentation
   reasoningPreviewLines?: SnapshotSelectorHook<number> | undefined
@@ -83,10 +85,10 @@ export const ReasoningRow = memo(function ReasoningRow({
     </>
   ), [running, summary])
   const content = useMemo(() => expanded ? (
-    <div className={css.thinkBody}>
+    <div className={css.thinkBody} data-text-interaction-source={textInteractionSource && !running ? '' : undefined}>
       {renderSlot('conversation.chat.reasoning.body', { rawText, text, running })}
     </div>
-  ) : undefined, [expanded, renderSlot, running, rawText, text])
+  ) : undefined, [expanded, renderSlot, running, rawText, text, textInteractionSource])
 
   if (hidden) return null
 
